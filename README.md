@@ -109,6 +109,7 @@ src/       Vue app
 ## Develop
 
 ```sh
+nvm use                # Node 24 (see .nvmrc)
 cp .env.example .env   # add STEAM_API_KEY from https://steamcommunity.com/dev/apikey
 npm install
 npm run dev            # Vite on :5173, API on :8787 (proxied under /api)

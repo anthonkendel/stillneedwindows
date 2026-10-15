@@ -1,10 +1,33 @@
 {
   "name": "stillneedwindows",
-  "private": true,
   "version": "0.1.0",
+  "private": true,
+  "description": "Does your Steam library still need Windows? Check how much of it runs on Linux: every game rated with ProtonDB tiers, Steam Deck status and anti-cheat blockers.",
+  "keywords": [
+    "steam",
+    "linux",
+    "protondb",
+    "proton",
+    "linux-gaming",
+    "steam-deck",
+    "anti-cheat",
+    "vue",
+    "hono",
+    "vercel"
+  ],
+  "homepage": "https://stillneedwindows.vercel.app",
+  "bugs": {
+    "url": "https://github.com/anthonkendel/stillneedwindows/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anthonkendel/stillneedwindows.git"
+  },
+  "license": "MIT",
+  "author": "anthonkendel (https://github.com/anthonkendel)",
   "type": "module",
   "engines": {
-    "node": ">=20.12"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "concurrently -k -n api,web -c magenta,cyan \"tsx watch server/dev.ts\" \"vite\"",
@@ -31,7 +54,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
-    "@types/node": "^26.6.5",
+    "@types/node": "^24.19.2",
     "@vitejs/plugin-vue": "^6.0.10",
     "@vue/test-utils": "^2.5.1",
     "axe-core": "^4.14.0",
@@ -45,6 +68,5 @@
     "vite": "^8.3.4",
     "vitest": "^5.0.5",
     "vue-tsc": "^3.3.13"
-  },
-  "license": "MIT"
+  }
 }
