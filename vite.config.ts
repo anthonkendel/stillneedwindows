@@ -38,6 +38,10 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [vue(), tailwindcss(), seo(siteUrl)],
+    build: {
+      // Never inline fonts as data: URLs. The CSP only allows fonts from our own origin.
+      assetsInlineLimit: (file) => (/\.(woff2?|ttf|otf)$/.test(file) ? false : undefined),
+    },
     server: {
       // In dev the Hono API runs separately (server/dev.ts) on port 8787.
       proxy: { '/api': 'http://localhost:8787' },
