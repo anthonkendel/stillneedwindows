@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { REPO_URL } from '../../shared/types'
 import PageMain from '../components/PageMain.vue'
 
 const { t, tm, rt } = useI18n()
 
-/** Set VITE_CONTACT to an email address or a URL (e.g. a contact form). */
-const raw = (import.meta.env.VITE_CONTACT ?? '').trim()
+/** GitHub issues by default; VITE_CONTACT (an email address or URL) overrides it. */
+const raw = (import.meta.env.VITE_CONTACT ?? '').trim() || `${REPO_URL}/issues`
 const contact = computed(() => {
-  if (!raw) return null
   const isEmail = /^[^\s/:]+@[^\s/]+\.[^\s/]+$/.test(raw)
   return { href: isEmail ? `mailto:${raw}` : raw, label: raw.replace(/^https?:\/\//, '') }
 })
@@ -37,8 +37,7 @@ const contact = computed(() => {
       <h2 id="privacy-contact" class="m-0 text-[20px] font-extrabold">{{ t('privacy.contactTitle') }}</h2>
       <p class="m-0 text-[15px] leading-relaxed text-muted">
         {{ t('privacy.contactText') }}
-        <a v-if="contact" :href="contact.href" class="font-semibold break-all">{{ contact.label }}</a>
-        <span v-else>{{ t('privacy.contactMissing') }}</span>
+        <a :href="contact.href" class="font-semibold break-all">{{ contact.label }}</a>
       </p>
     </section>
   </PageMain>

@@ -25,6 +25,7 @@ const sv: typeof en = {
   footer: {
     disclaimer: 'Resultaten är uppskattningar baserade på rapporter från användare. Kolla ProtonDB innan du köper ett spel.',
     privacy: 'Integritet',
+    source: 'Källkod',
     dataFrom: 'Data från {protondb}, {awacy} och {steam}.',
     steamApi: 'Steams webb-API',
     notAffiliated: 'Inte knutet till Valve eller ProtonDB.',
@@ -268,8 +269,7 @@ const sv: typeof en = {
       },
     ],
     contactTitle: 'Kontakt',
-    contactText: 'stillneedwindows är ett hobbyprojekt som drivs av en privatperson i Sverige. Frågor om integritet:',
-    contactMissing: 'Kontaktuppgifter kommer snart.',
+    contactText: 'stillneedwindows är ett hobbyprojekt med öppen källkod som drivs av en privatperson i Sverige. Har du frågor om integritet, skapa ett ärende på GitHub:',
   },
   notFoundPage: {
     title: 'Sidan finns inte',

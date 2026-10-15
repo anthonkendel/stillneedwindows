@@ -28,6 +28,7 @@ export default {
   footer: {
     disclaimer: 'Results are estimates based on community reports. Check ProtonDB before buying a game.',
     privacy: 'Privacy',
+    source: 'Source code',
     dataFrom: 'Data from {protondb}, {awacy} and the {steam}.',
     steamApi: 'Steam Web API',
     notAffiliated: 'Not affiliated with Valve or ProtonDB.',
@@ -271,8 +272,7 @@ export default {
       },
     ],
     contactTitle: 'Contact',
-    contactText: 'stillneedwindows is a hobby project run by a private individual in Sweden. Questions about privacy:',
-    contactMissing: 'Contact details coming soon.',
+    contactText: 'stillneedwindows is an open-source hobby project run by a private individual in Sweden. For privacy questions, open an issue on GitHub:',
   },
   notFoundPage: {
     title: 'Page not found',

@@ -18,6 +18,8 @@ export interface AntiCheatInfo {
   slug?: string
 }
 
+export const REPO_URL = 'https://github.com/anthonkendel/stillneedwindows'
+
 export const SOURCES = {
   protondb: 'https://www.protondb.com',
   awacy: 'https://areweanticheatyet.com',

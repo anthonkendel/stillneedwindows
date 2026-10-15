@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SOURCES } from '../../shared/types'
+import { REPO_URL, SOURCES } from '../../shared/types'
 import ExtLink from './ExtLink.vue'
 </script>
 
@@ -15,9 +15,10 @@ import ExtLink from './ExtLink.vue'
         </i18n-t>
         <p class="m-0">{{ $t('footer.notAffiliated') }}</p>
       </div>
-      <nav :aria-label="$t('footer.privacy')" class="shrink-0">
+      <div class="flex shrink-0 gap-5 sm:flex-col sm:gap-1">
         <RouterLink to="/privacy" class="flex min-h-11 items-center font-semibold sm:min-h-0">{{ $t('footer.privacy') }}</RouterLink>
-      </nav>
+        <ExtLink :href="REPO_URL" class="flex min-h-11 items-center font-semibold sm:min-h-0">{{ $t('footer.source') }}</ExtLink>
+      </div>
     </div>
   </footer>
 </template>

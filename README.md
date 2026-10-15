@@ -1,6 +1,25 @@
 # stillneedwindows
 
-Does your Steam library still need Windows? Paste a Steam profile and get one number: how much of the library runs well on Linux, by game count or by hours played, with a ProtonDB tier for every game.
+**Does your Steam library still need Windows?** Paste a Steam username or profile link and get one number: how much of your library runs well on Linux.
+
+**Try it: [stillneedwindows.vercel.app](https://stillneedwindows.vercel.app)**
+
+![Does your Steam library still need Windows?](public/og.png)
+
+- **One verdict:** counted by number of games or by hours played, so the games you actually play weigh the most.
+- **Every game checked:** its ProtonDB tier (Native → Borked), Steam Deck rating and anti-cheat status, each linked to its source.
+- **Blockers called out:** online games whose anti-cheat blocks Linux are flagged, so you know which games keep you on Windows and why.
+- **No login, no cookies, no tracking.** Profiles are never stored. See [the privacy page](https://stillneedwindows.vercel.app/privacy).
+- **English and Swedish**, mobile-first, WCAG 2.2 AA as the target.
+
+## Contributing
+
+Issues and pull requests are welcome, especially:
+- a game whose tier or anti-cheat status looks wrong
+- translations (see [Languages](#languages))
+- accessibility problems
+
+Compatibility data comes from [ProtonDB](https://www.protondb.com) and [Are We Anti-Cheat Yet](https://areweanticheatyet.com). If a game's rating itself is wrong, report it there so everyone benefits.
 
 ## How it works
 
@@ -23,11 +42,12 @@ Does your Steam library still need Windows? Paste a Steam profile and get one nu
 English and Swedish. There is no language switcher: Swedish if the browser prefers it, English otherwise. The Swedish copy is only downloaded when it's used.
 
 - Copy lives in `src/locales/`. `en.ts` is the source of truth; `locales.test.ts` fails if `sv.ts` is missing a key or a `{placeholder}`.
+- To add a language: copy `en.ts` to `<code>.ts`, translate it, and add it to `LOCALES` and `setLocale` in `src/i18n.ts`.
 - ProtonDB tier names (Platinum, Gold…) stay in English in both languages because they are ProtonDB's own labels.
 
 ## SEO and sharing
 
-- **Indexed pages:** only the front page and How it works. Each gets its own title, description and canonical URL (`src/lib/head.ts`). Both are listed in `sitemap.xml`.
+- **Indexed pages:** only the front page, How it works and Privacy. Each gets its own title, description and canonical URL (`src/lib/head.ts`), and all are listed in `sitemap.xml`.
 - **Not indexed:** personal result pages (`/u/…`) send `noindex` as a header and a meta tag. They are not blocked in robots.txt, because crawlers need to fetch them to see the noindex.
 - **Static tags for link previews:** `index.html` carries Open Graph, Twitter card and JSON-LD tags for crawlers that don't run JavaScript (Discord, Slack, X…). The share image is `public/og.png`.
 - **Domain:** set once with `VITE_SITE_URL`. The build fills it into `index.html`, `robots.txt` and `sitemap.xml`.
@@ -94,12 +114,25 @@ npm test
 npm run build
 ```
 
+## Configuration
+
+| Variable | Required | What it does |
+|---|---|---|
+| `STEAM_API_KEY` | Yes | Free key from [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey). Server only. |
+| `VITE_SITE_URL` | Yes in production | Public address, used for canonical URLs, link previews, robots.txt and the sitemap. |
+| `VITE_CONTACT` | No | Privacy contact (email or URL). Defaults to this repo's GitHub issues. |
+| `KV_REST_API_URL` / `KV_REST_API_TOKEN` | No | Upstash Redis cache. Set automatically by the Vercel integration. `UPSTASH_REDIS_REST_*` also works. Without them, the cache is memory only. |
+
+`VITE_*` values are built into the page, so changing them needs a redeploy.
+
 ## Deploy
 
 1. Import the repo in Vercel. The Vite preset and `vercel.json` handle the rest.
-2. Add the environment variables `STEAM_API_KEY`, `VITE_SITE_URL` and `VITE_CONTACT` (privacy contact: an email or URL).
-3. Optional: add Upstash Redis from the Vercel Marketplace for a shared cache. It sets its own env vars.
-4. Add the domain under Project → Settings → Domains, then redeploy so `VITE_SITE_URL` takes effect.
-5. Submit `https://<domain>/sitemap.xml` in Google Search Console.
+2. Add the environment variables above.
+3. Optional: add Upstash Redis from the Vercel Marketplace for a shared cache. Pick the same region as your functions (default US East). It sets its own env vars.
+4. Add the Firewall rate-limit rule from [Security](#security).
+5. With a custom domain, add it under Project → Settings → Domains, update `VITE_SITE_URL` and redeploy. Then submit `https://<domain>/sitemap.xml` in Google Search Console.
 
-Not affiliated with Valve or ProtonDB.
+## Disclaimer
+
+Results are estimates based on community reports. Check ProtonDB before buying a game. Not affiliated with Valve, Steam, ProtonDB or Are We Anti-Cheat Yet. Steam and the Steam logo are trademarks of Valve Corporation.
