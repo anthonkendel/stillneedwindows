@@ -4,6 +4,7 @@ import { SOURCES, TIERS } from '../../shared/types'
 import ExtLink from '../components/ExtLink.vue'
 import PageMain from '../components/PageMain.vue'
 import TierBadge from '../components/TierBadge.vue'
+import { homeRoute, lastUser } from '../lib/lastUser'
 
 const { t, tm, rt } = useI18n()
 
@@ -83,6 +84,8 @@ const SOURCE_LIST = [
       </details>
     </section>
 
-    <RouterLink to="/" class="btn btn-primary">{{ t('common.checkLibrary') }}</RouterLink>
+    <RouterLink :to="homeRoute" class="btn btn-primary">
+      {{ lastUser ? t('common.backToResults') : t('common.checkLibrary') }}
+    </RouterLink>
   </PageMain>
 </template>

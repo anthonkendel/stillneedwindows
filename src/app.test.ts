@@ -113,6 +113,14 @@ describe('every screen renders in every language', () => {
     }
   })
 
+  it('remembers the last checked library for this tab', async () => {
+    await visit(`/u/${STEAMID}`)
+    expect(JSON.parse(sessionStorage.getItem('snw-last-user')!)).toEqual({ steamid: STEAMID, name: 'Tester' })
+    await visit('/how-it-works')
+    expect(wrapper.find('header a').attributes('href')).toBe(`/u/${STEAMID}`)
+    expect(wrapper.text()).toContain(i18n.global.t('common.backToResults'))
+  })
+
   it('canonicalises a custom name to the SteamID64', async () => {
     await visit('/u/somename')
     expect(router.currentRoute.value.params.query).toBe(STEAMID)

@@ -1,6 +1,7 @@
 import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useLibrary } from '../stores/library'
+import { rememberUser } from './lastUser'
 
 /**
  * Loads the library named in the route (/u/:query) and, once a custom name
@@ -21,6 +22,15 @@ export function useRouteLibrary() {
       lib.alias(steamid)
       router.replace({ name: route.name!, params: { query: steamid }, hash: route.hash })
     },
+  )
+
+  // Remember a successfully checked library so "home" leads back to it in this tab.
+  watch(
+    () => lib.phase,
+    (phase) => {
+      if (phase === 'done' && lib.profile) rememberUser({ steamid: lib.profile.steamid, name: lib.profile.name })
+    },
+    { immediate: true },
   )
 
   return { lib, query, retry: () => lib.load(query.value, true) }
