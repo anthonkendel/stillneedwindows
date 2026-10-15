@@ -133,6 +133,10 @@ npm run build
 4. Add the Firewall rate-limit rule from [Security](#security).
 5. With a custom domain, add it under Project → Settings → Domains, update `VITE_SITE_URL` and redeploy. Then submit `https://<domain>/sitemap.xml` in Google Search Console.
 
+## License
+
+[MIT](LICENSE). Do what you like with it. If you build on it, a link back to [stillneedwindows](https://github.com/anthonkendel/stillneedwindows) is appreciated.
+
 ## Disclaimer
 
 Results are estimates based on community reports. Check ProtonDB before buying a game. Not affiliated with Valve, Steam, ProtonDB or Are We Anti-Cheat Yet. Steam and the Steam logo are trademarks of Valve Corporation.
