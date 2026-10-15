@@ -1,90 +1,329 @@
 @import 'tailwindcss';
 
+/* Colors are checked against WCAG 2.2 AA on the dark ground (see README):
+   text ≥ 4.5:1, control borders and chart segments ≥ 3:1. */
 @theme {
-  --font-sans: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Archivo', 'Noto Sans', 'Noto Sans SC', 'Noto Sans Devanagari', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   --color-bg: #0d1014;
   --color-surface: #12161b;
   --color-field: #151a20;
   --color-raised: #1a2028;
-  --color-line: #1f252d;
-  --color-line-strong: #2c343e;
+  --color-line: #1f252d; /* decorative dividers only */
+  --color-control: #606b79; /* borders of inputs, chips, secondary buttons: 3.2:1+ */
+  --color-control-hover: #7d8896;
 
   --color-ink: #e9edf2;
   --color-ink-2: #c9d1da;
   --color-muted: #a9b3bf;
   --color-faint: #8a95a3;
-  --color-dim: #6b7684;
+  --color-dim: #7d8896; /* smallest grey that passes 4.5:1 on every surface */
 
   --color-accent: #b39bff;
+  --color-accent-hover: #c8b8ff;
   --color-accent-soft: #c4b1ff;
+  --color-on-accent: #0d1014; /* 8.2:1 on accent */
   --color-danger: #ff8a8e;
   --color-danger-line: #f0555b;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-html {
-  background: var(--color-bg);
-  color: var(--color-ink);
-  -webkit-text-size-adjust: 100%;
-}
-
-body {
-  margin: 0;
-  font-family: var(--font-sans);
-}
-
-a {
-  color: var(--color-accent-soft);
+/* Base styles live in a layer so component classes (buttons) can override them.
+   Unlayered `a { color }` beat `.btn-primary` before, which put light text on purple. */
+@layer base {
+  html {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+  }
+  a {
+    color: var(--color-accent-soft);
+    text-underline-offset: 3px;
+    transition: color 0.15s;
+  }
+  a:hover {
+    color: var(--color-accent-hover);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
 }
 
 @layer components {
   .btn {
     display: flex;
-    height: 3.5rem;
+    min-height: 3.5rem;
     align-items: center;
     justify-content: center;
+    gap: 0.5rem;
     border-radius: 0.75rem;
     padding: 0 1.5rem;
     font-size: 1rem;
     text-decoration: none;
     cursor: pointer;
+    border: 1px solid transparent;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s,
+      color 0.15s,
+      transform 0.12s var(--ease-out),
+      box-shadow 0.2s;
   }
-  .btn-primary {
+  .btn:active {
+    transform: scale(0.97);
+  }
+  .btn-primary,
+  .btn-primary:hover {
     background: var(--color-accent);
-    color: var(--color-bg);
+    color: var(--color-on-accent);
     font-weight: 800;
   }
   .btn-secondary {
-    border: 1px solid var(--color-line-strong);
+    background: transparent;
+    border-color: var(--color-control);
     color: var(--color-ink);
     font-weight: 600;
   }
+  .btn-secondary:hover {
+    color: var(--color-ink);
+  }
+  .btn-secondary:active {
+    background: var(--color-raised);
+  }
+
   .card {
     border: 1px solid var(--color-line);
     background: var(--color-surface);
     border-radius: 0.875rem;
   }
+
   .field {
     width: 100%;
-    height: 3.5rem;
+    min-height: 3.5rem;
     box-sizing: border-box;
     padding: 0 1rem;
     background: var(--color-field);
-    border: 1px solid var(--color-line-strong);
+    border: 1px solid var(--color-control);
     border-radius: 0.75rem;
     color: var(--color-ink);
     font-size: 1rem;
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s;
   }
+  .field::placeholder {
+    color: var(--color-dim);
+  }
+  .field:focus-visible {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgb(179 155 255 / 0.35);
+  }
+
+  .chip {
+    display: inline-flex;
+    min-height: 2.75rem;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    border: 1px solid var(--color-control);
+    background: var(--color-field);
+    padding: 0 0.875rem;
+    color: var(--color-ink-2);
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s,
+      color 0.15s,
+      transform 0.12s var(--ease-out);
+  }
+  .chip:active {
+    transform: scale(0.95);
+  }
+  .chip[aria-pressed='true'] {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-bg);
+  }
+
+  .segment {
+    min-height: 2.75rem;
+    border: 0;
+    border-radius: 9px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    color: var(--color-muted);
+    transition:
+      background-color 0.2s,
+      color 0.2s,
+      transform 0.12s var(--ease-out);
+  }
+  .segment:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+  .segment[aria-pressed='true'] {
+    background: var(--color-ink);
+    color: var(--color-bg);
+  }
+  .segment:disabled {
+    cursor: not-allowed;
+    color: var(--color-dim);
+  }
+
   .kicker {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     letter-spacing: 0.08em;
     color: var(--color-faint);
   }
+
+  /* Plain links that should look like UI, not prose */
+  .ui-link {
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+  .ui-link:hover {
+    color: var(--color-ink);
+  }
+  .ui-link:active {
+    opacity: 0.7;
+  }
+
+  .ext-link {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
 }
 
-:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
+/* Hover only where there is a real pointer, so taps don't leave sticky highlights. */
+@media (hover: hover) {
+  .btn-primary:hover {
+    background: var(--color-accent-hover);
+    box-shadow: 0 6px 24px -8px rgb(179 155 255 / 0.6);
+  }
+  .btn-secondary:hover {
+    background: var(--color-raised);
+    border-color: var(--color-control-hover);
+  }
+  .chip:hover:not([aria-pressed='true']) {
+    border-color: var(--color-control-hover);
+    background: var(--color-raised);
+    color: var(--color-ink);
+  }
+  .segment:hover:not(:disabled):not([aria-pressed='true']) {
+    background: var(--color-raised);
+    color: var(--color-ink);
+  }
+  .field:hover:not(:focus) {
+    border-color: var(--color-control-hover);
+  }
+  .row-hover {
+    transition: background-color 0.15s;
+  }
+  .row-hover:hover {
+    background: var(--color-raised);
+  }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ---- Motion ---------------------------------------------------------------- */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.04);
+  }
+}
+
+/* Staggered entrance: set --i on each item. */
+.anim-in {
+  animation: fade-up 0.45s var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+.anim-grow {
+  transform-origin: left;
+  animation: grow-x 0.8s var(--ease-out) both 0.15s;
+}
+.anim-pop {
+  animation: pop 0.5s var(--ease-out) both;
+}
+
+/* Route and state transitions */
+.page-enter-active,
+.page-leave-active {
+  transition:
+    opacity 0.22s var(--ease-out),
+    transform 0.22s var(--ease-out);
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.page-leave-to {
+  opacity: 0;
+}
+
+details[open] > .faq-body {
+  animation: fade-up 0.25s var(--ease-out);
+}
+details > summary .chevron {
+  transition: transform 0.2s var(--ease-out);
+}
+details[open] > summary .chevron {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

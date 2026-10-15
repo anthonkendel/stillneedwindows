@@ -3,7 +3,7 @@ defineProps<{ kind: 'lock' | 'search' | 'warn' }>()
 </script>
 
 <template>
-  <div class="flex size-14 items-center justify-center rounded-[14px] bg-raised">
+  <div class="anim-pop flex size-14 items-center justify-center rounded-[14px] bg-raised">
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
       stroke-linecap="round" stroke-linejoin="round" class="text-accent" aria-hidden="true">
       <template v-if="kind === 'lock'">

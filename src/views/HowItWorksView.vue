@@ -1,105 +1,88 @@
 <script setup lang="ts">
-import { TIERS } from '../../shared/types'
+import { useI18n } from 'vue-i18n'
+import { SOURCES, TIERS } from '../../shared/types'
+import ExtLink from '../components/ExtLink.vue'
 import PageMain from '../components/PageMain.vue'
 import TierBadge from '../components/TierBadge.vue'
-import { VERDICT_COPY, VERDICT_RULES } from '../lib/copy'
-import { TIER_META } from '../lib/tiers'
 
-const steps = [
-  {
-    title: 'Read your library',
-    text: "We ask Steam's public API for the games you own and your hours in each. This only works if your profile and game details are public.",
-  },
-  {
-    title: 'Match ProtonDB and anti-cheat data',
-    text: 'Each game gets its ProtonDB tier, built from reports by people playing on Linux. Steam tells us which games have a native Linux version, and online games are checked against Are We Anti-Cheat Yet.',
-  },
-  {
-    title: 'Work out the verdict',
-    text: 'Counted by games or by hours played, so a game you sank 400 hours into weighs more than one you never launched.',
-  },
-]
+const { t, tm, rt } = useI18n()
 
-const faq = [
-  {
-    id: 'public',
-    q: 'How do I make my profile public?',
-    a: 'In Steam, open your profile, choose Edit Profile, then Privacy Settings. Set My profile and Game details to Public, and untick "Always keep my total playtime private" to get the hours view. You can switch it back afterwards.',
-  },
-  {
-    id: 'login',
-    q: 'Why no Steam login?',
-    a: "Signing in with Steam only proves who you are; it doesn't give anyone access to a private game list. A public profile is the only way, so we skip the login.",
-  },
-  {
-    id: 'anticheat',
-    q: 'What about anti-cheat?',
-    a: "Some online games block Linux on purpose. We count those as Borked even when ProtonDB reports look fine (often from single-player modes), so you know a Proton update won't fix them.",
-  },
-  {
-    id: 'pending',
-    q: 'Why are some games Pending?',
-    a: "Nobody has reported them on ProtonDB yet. They still count towards your total, so a big pile of obscure games pulls the number down. Many of them run fine; check by hours played if that's the case for you.",
-  },
-  { id: 'stores', q: 'Does it check Epic, GOG or Xbox games?', a: 'No, Steam only. ProtonDB ratings are for Steam games.' },
-  {
-    id: 'data',
-    q: 'Do you store my data?',
-    a: "No profiles or game lists are stored. We only cache each game's compatibility for a day so checks stay fast.",
-  },
-  {
-    id: 'hardware',
-    q: 'Is my hardware taken into account?',
-    a: 'No. Tiers come from reports across many machines. AMD and Intel graphics tend to have the fewest surprises on Linux.',
-  },
-]
+const RULES = ['optional', 'mostly', 'dualboot', 'needed'] as const
+const FAQ = ['public', 'login', 'anticheat', 'pending', 'stores', 'data', 'hardware'] as const
+const SOURCE_LIST = [
+  { key: 'protondb', name: 'ProtonDB', href: SOURCES.protondb },
+  { key: 'steamApi', name: 'Steam Web API', href: SOURCES.steamApi },
+  { key: 'steamStore', name: 'Steam Store', href: SOURCES.steamStore },
+  { key: 'awacy', name: 'Are We Anti-Cheat Yet', href: SOURCES.awacy },
+] as const
 </script>
 
 <template>
   <PageMain>
-    <div class="flex flex-col gap-3">
-      <h1 class="m-0 text-[38px] leading-none font-black tracking-tight">How it works</h1>
-      <p class="m-0 text-[17px] leading-normal text-muted">
-        We read the games you own on Steam, look each one up on ProtonDB, and add it up into one verdict.
-      </p>
+    <div class="anim-in flex flex-col gap-3">
+      <h1 class="m-0 text-[38px] leading-none font-black tracking-tight">{{ t('how.title') }}</h1>
+      <p class="m-0 text-[17px] leading-normal text-muted">{{ t('how.lead') }}</p>
     </div>
 
-    <section class="flex flex-col gap-3">
-      <h2 class="m-0 mb-1 text-[22px] font-extrabold">Three steps</h2>
-      <div v-for="(s, i) in steps" :key="s.title" class="card flex gap-4 p-[18px]">
-        <span class="font-mono text-[13px] text-accent">0{{ i + 1 }}</span>
-        <div class="flex flex-col gap-1">
-          <span class="font-bold">{{ s.title }}</span>
-          <span class="text-sm leading-normal text-muted">{{ s.text }}</span>
+    <section class="flex flex-col gap-3" aria-labelledby="steps-h">
+      <h2 id="steps-h" class="m-0 mb-1 text-[22px] font-extrabold">{{ t('how.stepsTitle') }}</h2>
+      <ol class="m-0 flex list-none flex-col gap-3 p-0">
+        <li
+          v-for="(s, i) in tm('how.steps') as { title: string; text: string }[]"
+          :key="i"
+          class="card anim-in flex gap-4 p-[18px]"
+          :style="{ '--i': i + 1 }"
+        >
+          <span class="font-mono text-[13px] text-accent" aria-hidden="true">0{{ i + 1 }}</span>
+          <div class="flex flex-col gap-1">
+            <h3 class="m-0 text-base font-bold">{{ rt(s.title) }}</h3>
+            <p class="m-0 text-sm leading-normal text-muted">{{ rt(s.text) }}</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="flex flex-col" aria-labelledby="tiers-h">
+      <h2 id="tiers-h" class="m-0 mb-2 text-[22px] font-extrabold">{{ t('how.tiersTitle') }}</h2>
+      <dl class="m-0">
+        <div v-for="tier in TIERS" :key="tier" class="flex gap-3.5 border-b border-line py-3.5">
+          <dt class="shrink-0"><TierBadge :tier="tier" wide /></dt>
+          <dd class="m-0 text-[15px] leading-normal text-ink-2">{{ t(`tiers.${tier}`) }}</dd>
         </div>
+      </dl>
+      <p class="m-0 mt-3 text-sm leading-normal text-faint">{{ t('how.runsWell') }}</p>
+    </section>
+
+    <section class="flex flex-col gap-2" aria-labelledby="verdicts-h">
+      <h2 id="verdicts-h" class="m-0 mb-2 text-[22px] font-extrabold">{{ t('how.verdictsTitle') }}</h2>
+      <div v-for="v in RULES" :key="v" class="card flex flex-col gap-1 px-4 py-3.5">
+        <h3 class="m-0 text-[17px] font-extrabold">{{ t(`verdicts.${v}.headline`) }}</h3>
+        <p class="m-0 text-sm leading-normal text-muted">{{ t(`how.rules.${v}`) }}</p>
       </div>
     </section>
 
-    <section class="flex flex-col">
-      <h2 class="m-0 mb-2 text-[22px] font-extrabold">What the tiers mean</h2>
-      <div v-for="t in TIERS" :key="t" class="flex gap-3.5 border-b border-line py-3.5">
-        <TierBadge :tier="t" wide class="self-start" />
-        <span class="text-[15px] leading-normal text-ink-2">{{ TIER_META[t].meaning }}</span>
-      </div>
-      <p class="m-0 mt-3 text-sm leading-normal text-faint">Native, Platinum and Gold count as "runs well".</p>
+    <section class="flex flex-col gap-2" aria-labelledby="sources-h">
+      <h2 id="sources-h" class="m-0 mb-2 text-[22px] font-extrabold">{{ t('how.sourcesTitle') }}</h2>
+      <ul class="m-0 flex list-none flex-col p-0">
+        <li v-for="s in SOURCE_LIST" :key="s.key" class="flex flex-col gap-0.5 border-b border-line py-3">
+          <ExtLink :href="s.href" class="ext-link min-h-8 w-fit text-base" lang="en">{{ s.name }}</ExtLink>
+          <span class="text-sm leading-normal text-muted">{{ t(`how.sources.${s.key}`) }}</span>
+        </li>
+      </ul>
     </section>
 
-    <section class="flex flex-col gap-2">
-      <h2 class="m-0 mb-2 text-[22px] font-extrabold">The verdicts</h2>
-      <div v-for="v in VERDICT_RULES" :key="v.key" class="card flex flex-col gap-1 px-4 py-3.5">
-        <span class="text-[17px] font-extrabold">{{ VERDICT_COPY[v.key].headline }}</span>
-        <span class="text-sm leading-normal text-muted">{{ v.rule }}</span>
-      </div>
-    </section>
-
-    <section class="flex flex-col">
-      <h2 class="m-0 mb-2 text-[22px] font-extrabold">Questions</h2>
-      <details v-for="f in faq" :id="f.id" :key="f.id" class="border-b border-line" :open="$route.hash === `#${f.id}`">
-        <summary class="flex min-h-14 cursor-pointer list-none items-center font-semibold">{{ f.q }}</summary>
-        <p class="m-0 mb-4 text-[15px] leading-relaxed text-muted">{{ f.a }}</p>
+    <section class="flex flex-col" aria-labelledby="faq-h">
+      <h2 id="faq-h" class="m-0 mb-2 text-[22px] font-extrabold">{{ t('how.faqTitle') }}</h2>
+      <details v-for="f in FAQ" :id="f" :key="f" class="border-b border-line" :open="$route.hash === `#${f}`">
+        <summary class="row-hover -mx-2 flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 rounded-lg px-2 font-semibold">
+          {{ t(`how.faq.${f}.q`) }}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+            stroke-linecap="round" stroke-linejoin="round" class="chevron shrink-0 text-muted" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+        </summary>
+        <p class="faq-body m-0 mb-4 text-[15px] leading-relaxed text-muted">{{ t(`how.faq.${f}.a`) }}</p>
       </details>
     </section>
 
-    <RouterLink to="/" class="btn btn-primary">Check my library</RouterLink>
+    <RouterLink to="/" class="btn btn-primary">{{ t('common.checkLibrary') }}</RouterLink>
   </PageMain>
 </template>

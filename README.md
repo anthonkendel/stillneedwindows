@@ -18,6 +18,31 @@ Does your Steam library still need Windows? Paste a Steam profile and get one nu
    - **Dual-boot territory:** 40–69% runs well
    - **You still need Windows:** under 40% runs well
 
+## Languages
+
+English, Swedish, Spanish, Simplified Chinese and Hindi. The app picks the visitor's browser language (or their saved choice from the footer), and only the active language is downloaded.
+
+- Copy lives in `src/locales/`. `en.ts` is the source of truth; `locales.test.ts` fails if another language is missing a key or a `{placeholder}`.
+- To add a language: copy `en.ts`, translate it, and add it to `LOCALES` and `loaders` in `src/i18n.ts`.
+- ProtonDB tier names (Platinum, Gold…) stay in English everywhere because they are ProtonDB's own labels.
+- The non-English copy hasn't been reviewed by native speakers yet.
+
+## Accessibility
+
+Target: WCAG 2.2 AA.
+
+- **Contrast:** every text color is at least 4.5:1 on its background. Control borders, chart segments and focus rings are at least 3:1. Colors are defined in `src/style.css`.
+- **Keyboard:** skip link, visible focus on everything, and focus moves to the new page on navigation. All targets are at least 44×44 px.
+- **Screen readers:**
+  - Landmarks and heading order on every page.
+  - Toggles and filters are real buttons with `aria-pressed`.
+  - The progress bar has values, and loading progress, the verdict and the filter result count are announced.
+  - The chart has a text alternative, and links that open a new tab say so.
+- **Motion:** every animation is switched off under `prefers-reduced-motion`. Nothing blinks or moves for longer than 5 seconds.
+- **Language:** `<html lang>` follows the chosen language, and English-only terms (tier names) are marked `lang="en"`.
+- **Tests:** `src/app.test.ts` renders every screen in every language with axe-core and fails on any violation or missing translation. Contrast is excluded there because the simulated DOM can't compute colors.
+- **Still needed:** an automated test isn't an audit. Before calling it compliant, test with a real screen reader (VoiceOver, NVDA) and at 200% zoom.
+
 ## Stack
 
 Vue 3, TypeScript, Vue Router, Pinia and Tailwind CSS 4 on the front. Hono and Zod on the back, deployed as one Vercel Function (`api/index.ts`).

@@ -5,11 +5,12 @@ import { getJson } from './http.js'
 
 // Are We Anti-Cheat Yet publishes its data set as JSON on GitHub.
 const SOURCE = 'https://raw.githubusercontent.com/AreWeAntiCheatYet/AreWeAntiCheatYet/master/games.json'
-const CACHE_KEY = 'awacy:v1'
+const CACHE_KEY = 'awacy:v2'
 const TTL = 60 * 60 * 24
 
 const Entry = z.looseObject({
   status: z.string(),
+  slug: z.string().optional(),
   anticheats: z.array(z.string()).optional(),
   storeIds: z.looseObject({ steam: z.union([z.string(), z.number()]).optional() }).optional(),
 })
@@ -28,7 +29,11 @@ export function parseAntiCheatList(json: unknown): Table {
     const steam = e.data.storeIds?.steam
     const status = e.data.status.toLowerCase() as AntiCheatStatus
     if (steam === undefined || !STATUSES.includes(status)) continue
-    table[String(steam)] = { status, anticheats: e.data.anticheats ?? [] }
+    table[String(steam)] = {
+      status,
+      anticheats: e.data.anticheats ?? [],
+      ...(e.data.slug ? { slug: e.data.slug } : {}),
+    }
   }
   return table
 }

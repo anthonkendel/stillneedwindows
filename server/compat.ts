@@ -5,7 +5,7 @@ import { mapLimit } from '../shared/pool.js'
 import { getProtonTier } from './protondb.js'
 import { getStoreInfo, type StoreInfo } from './steam.js'
 
-const KEY = (appid: number) => `compat:v1:${appid}`
+const KEY = (appid: number) => `compat:v2:${appid}`
 const TTL_KNOWN = 60 * 60 * 24 // tiers move slowly
 const TTL_PENDING = 60 * 60 * 6 // look again sooner when there were no reports
 

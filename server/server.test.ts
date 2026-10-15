@@ -32,12 +32,12 @@ describe('parsers', () => {
 
   it('keys anti-cheat entries by Steam appid and skips junk', () => {
     const t = parseAntiCheatList([
-      { name: 'A', status: 'Denied', anticheats: ['BattlEye'], storeIds: { steam: '123' } },
+      { name: 'A', slug: 'a-game', status: 'Denied', anticheats: ['BattlEye'], storeIds: { steam: '123' } },
       { name: 'B', status: 'Supported', storeIds: {} },
       { name: 'C', status: 'Weird', storeIds: { steam: 9 } },
       'junk',
     ])
-    expect(t).toEqual({ '123': { status: 'denied', anticheats: ['BattlEye'] } })
+    expect(t).toEqual({ '123': { status: 'denied', anticheats: ['BattlEye'], slug: 'a-game' } })
   })
 })
 

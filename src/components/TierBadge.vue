@@ -9,9 +9,10 @@ const meta = computed(() => TIER_META[props.tier])
 
 <template>
   <span
-    class="inline-block shrink-0 rounded-md px-2.5 py-1 text-center font-mono text-xs font-semibold"
-    :class="wide ? 'w-21' : ''"
+    class="inline-block shrink-0 rounded-md px-2.5 py-1 text-center font-mono text-xs font-semibold transition-colors duration-300"
+    :class="wide ? 'w-22' : ''"
     :style="{ background: meta.color, color: meta.ink }"
+    lang="en"
   >
     {{ meta.label }}
   </span>

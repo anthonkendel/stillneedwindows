@@ -14,6 +14,21 @@ export type AntiCheatStatus = 'supported' | 'running' | 'planned' | 'broken' | '
 export interface AntiCheatInfo {
   status: AntiCheatStatus
   anticheats: string[]
+  /** Are We Anti-Cheat Yet page slug, for linking to the source. */
+  slug?: string
+}
+
+export const SOURCES = {
+  protondb: 'https://www.protondb.com',
+  awacy: 'https://areweanticheatyet.com',
+  steamApi: 'https://steamcommunity.com/dev',
+  steamStore: 'https://store.steampowered.com',
+} as const
+
+export const sourceLinks = {
+  protondb: (appid: number) => `${SOURCES.protondb}/app/${appid}`,
+  steamStore: (appid: number) => `${SOURCES.steamStore}/app/${appid}`,
+  awacy: (slug?: string) => (slug ? `${SOURCES.awacy}/game/${slug}` : SOURCES.awacy),
 }
 
 export interface Profile {

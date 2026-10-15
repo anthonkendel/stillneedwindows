@@ -9,27 +9,27 @@ defineEmits<{ retry: [] }>()
 <template>
   <div class="flex flex-col gap-6">
     <StateIcon kind="lock" />
-    <div class="flex flex-col gap-2.5">
-      <h1 class="m-0 text-[34px] leading-tight font-black tracking-tight">Your game list is private</h1>
+    <div class="anim-in flex flex-col gap-2.5" style="--i: 1">
+      <h1 class="m-0 text-[34px] leading-tight font-black tracking-tight">{{ $t('private.title') }}</h1>
       <p class="m-0 leading-normal text-muted">
-        We found {{ profile?.name ?? 'the profile' }}, but Steam won't share the games. Make them public for a
-        minute, then try again.
+        {{ $t('private.lead', { name: profile?.name ?? $t('private.someone') }) }}
       </p>
     </div>
 
-    <ol class="card m-0 flex flex-col gap-3 py-[18px] pr-[18px] pl-10 text-[15px] leading-normal text-ink-2">
-      <li>On Steam, open your profile and choose <strong class="text-ink">Edit Profile</strong>.</li>
-      <li>Go to <strong class="text-ink">Privacy Settings</strong>.</li>
-      <li>Set <strong class="text-ink">My profile</strong> and <strong class="text-ink">Game details</strong> to Public.</li>
-      <li>For the hours view, untick <strong class="text-ink">Always keep my total playtime private</strong>.</li>
+    <ol class="card anim-in m-0 flex flex-col gap-3 py-[18px] pr-[18px] pl-10 text-[15px] leading-normal text-ink-2" style="--i: 2">
+      <i18n-t scope="global" keypath="private.step1" tag="li"><template #term><strong class="text-ink">{{ $t('private.step1Term') }}</strong></template></i18n-t>
+      <i18n-t scope="global" keypath="private.step2" tag="li"><template #term><strong class="text-ink">{{ $t('private.step2Term') }}</strong></template></i18n-t>
+      <i18n-t scope="global" keypath="private.step3" tag="li">
+        <template #a><strong class="text-ink">{{ $t('private.step3A') }}</strong></template>
+        <template #b><strong class="text-ink">{{ $t('private.step3B') }}</strong></template>
+      </i18n-t>
+      <i18n-t scope="global" keypath="private.step4" tag="li"><template #term><strong class="text-ink">{{ $t('private.step4Term') }}</strong></template></i18n-t>
     </ol>
-    <p class="m-0 text-sm leading-normal text-faint">
-      You can set it back to private right after the check. Steam can take a minute to apply the change.
-    </p>
+    <p class="m-0 text-sm leading-normal text-faint">{{ $t('private.note') }}</p>
 
     <div class="flex flex-col gap-2.5">
-      <button type="button" class="btn btn-primary border-0" @click="$emit('retry')">I've made it public, try again</button>
-      <RouterLink to="/" class="btn btn-secondary">Check another profile</RouterLink>
+      <button type="button" class="btn btn-primary" @click="$emit('retry')">{{ $t('private.retry') }}</button>
+      <RouterLink to="/" class="btn btn-secondary">{{ $t('common.another') }}</RouterLink>
     </div>
   </div>
 </template>
