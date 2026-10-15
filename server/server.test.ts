@@ -7,8 +7,9 @@ describe('parsers', () => {
   it('tells a hidden game list from an empty one', () => {
     expect(parseOwnedGames({ response: {} })).toBeNull()
     expect(parseOwnedGames({ response: { game_count: 0 } })).toEqual([])
-    expect(parseOwnedGames({ response: { game_count: 1, games: [{ appid: 10, name: 'X', playtime_forever: 5 }] } }))
-      .toEqual([{ appid: 10, name: 'X', minutes: 5 }])
+    expect(
+      parseOwnedGames({ response: { game_count: 1, games: [{ appid: 10, name: 'X', playtime_forever: 5 }] } }),
+    ).toEqual([{ appid: 10, name: 'X', minutes: 5 }])
   })
 
   it('reads native and Deck status from store items', () => {
@@ -100,7 +101,9 @@ describe('API', () => {
   })
 
   const player = (vis: number) => ({
-    response: { players: [{ steamid: '76561197960287930', personaname: 'P', profileurl: 'u', communityvisibilitystate: vis }] },
+    response: {
+      players: [{ steamid: '76561197960287930', personaname: 'P', profileurl: 'u', communityvisibilitystate: vis }],
+    },
   })
 
   it('resolves a profile and sorts games by playtime', async () => {
@@ -108,7 +111,13 @@ describe('API', () => {
     routes['ResolveVanityURL'] = { response: { success: 1, steamid: '76561197960287930' } }
     routes['GetPlayerSummaries'] = player(3)
     routes['GetOwnedGames'] = {
-      response: { game_count: 2, games: [{ appid: 1, name: 'A', playtime_forever: 1 }, { appid: 2, name: 'B', playtime_forever: 9 }] },
+      response: {
+        game_count: 2,
+        games: [
+          { appid: 1, name: 'A', playtime_forever: 1 },
+          { appid: 2, name: 'B', playtime_forever: 9 },
+        ],
+      },
     }
     const body = await (await app.request('/api/profile/someone')).json()
     expect(body.status).toBe('ok')
@@ -153,7 +162,13 @@ describe('API', () => {
   it('combines store, ProtonDB and anti-cheat data', async () => {
     const { default: app } = await import('./app.js')
     routes['IStoreBrowseService'] = {
-      response: { store_items: [{ appid: 10, platforms: { steamos_linux: true } }, { appid: 20, platforms: {} }, { appid: 30, platforms: {} }] },
+      response: {
+        store_items: [
+          { appid: 10, platforms: { steamos_linux: true } },
+          { appid: 20, platforms: {} },
+          { appid: 30, platforms: {} },
+        ],
+      },
     }
     routes['summaries/20'] = { tier: 'platinum' }
     routes['summaries/30'] = { tier: 'gold' }

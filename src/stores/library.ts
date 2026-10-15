@@ -88,7 +88,10 @@ export const useLibrary = defineStore('library', () => {
       // Games arrive sorted by playtime, so the ones that matter most come back first.
       // Ids are sorted inside each batch so the same library always asks for the same
       // URLs, which lets the browser and CDN caches answer repeat checks.
-      const batches = chunk(res.games.map((g) => g.appid), BATCH).map((ids) => ids.sort((a, b) => a - b))
+      const batches = chunk(
+        res.games.map((g) => g.appid),
+        BATCH,
+      ).map((ids) => ids.sort((a, b) => a - b))
       await mapLimit(batches, PARALLEL, (ids) => checkBatch(ids, id))
       if (id === run) phase.value = 'done'
     } catch {

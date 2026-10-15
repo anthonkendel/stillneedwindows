@@ -13,7 +13,10 @@ type State = 'done' | 'now' | 'wait'
 const steps = computed<{ label: string; state: State }[]>(() => {
   const gotGames = lib.phase === 'checking'
   return [
-    { label: gotGames ? t('loading.stepRead', { n: total.value }) : t('loading.stepReading'), state: gotGames ? 'done' : 'now' },
+    {
+      label: gotGames ? t('loading.stepRead', { n: total.value }) : t('loading.stepReading'),
+      state: gotGames ? 'done' : 'now',
+    },
     { label: t('loading.stepMatch'), state: gotGames ? 'now' : 'wait' },
     { label: t('loading.stepVerdict'), state: 'wait' },
   ]
@@ -22,7 +25,10 @@ const steps = computed<{ label: string; state: State }[]>(() => {
 
 <template>
   <div class="flex flex-col gap-7" aria-busy="true">
-    <ProfileRow :profile="lib.profile" :detail="lib.profile ? t('loading.profileFound') : t('loading.findingProfile')" />
+    <ProfileRow
+      :profile="lib.profile"
+      :detail="lib.profile ? t('loading.profileFound') : t('loading.findingProfile')"
+    />
 
     <div class="flex flex-col gap-3.5">
       <h1 class="m-0 text-[34px] leading-tight font-black tracking-tight">{{ t('loading.title') }}</h1>
@@ -51,9 +57,24 @@ const steps = computed<{ label: string; state: State }[]>(() => {
     <ol class="card m-0 flex list-none flex-col gap-2.5 p-[18px] font-mono text-[13px] leading-snug">
       <li v-for="s in steps" :key="s.state + s.label" class="flex items-center gap-2.5">
         <span class="flex size-4 shrink-0 items-center justify-center" aria-hidden="true">
-          <svg v-if="s.state === 'done'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6FE3A6"
-            stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="anim-pop"><path d="M5 12l5 5L19 7" /></svg>
-          <span v-else-if="s.state === 'now'" class="size-3 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+          <svg
+            v-if="s.state === 'done'"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#6FE3A6"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="anim-pop"
+          >
+            <path d="M5 12l5 5L19 7" />
+          </svg>
+          <span
+            v-else-if="s.state === 'now'"
+            class="size-3 animate-spin rounded-full border-2 border-accent border-t-transparent"
+          />
           <span v-else class="size-1.5 rounded-full bg-dim" />
         </span>
         <span :class="{ done: 'text-ink-2', now: 'text-ink', wait: 'text-dim' }[s.state]">{{ s.label }}</span>

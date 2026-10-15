@@ -9,13 +9,15 @@ const sv: typeof en = {
     notFound: 'Sidan finns inte',
     searchDesc:
       'Klistra in din Steam-profil och se hur stor del av biblioteket som fungerar på Linux, spel för spel, med ProtonDB-nivåer och anti-fusk-status. Gratis, ingen inloggning.',
-    resultsDesc: 'Hur stor del av det här Steam-biblioteket som fungerar på Linux, räknat i antal spel och i speltimmar.',
+    resultsDesc:
+      'Hur stor del av det här Steam-biblioteket som fungerar på Linux, räknat i antal spel och i speltimmar.',
     gamesDesc: 'Alla spel i det här Steam-biblioteket med ProtonDB-nivå, Steam Deck-betyg och anti-fusk-status.',
     howDesc:
       'Så kollar stillneedwindows ett Steam-bibliotek mot ProtonDB, Steam och Are We Anti-Cheat Yet, och så räknas Linux-beskedet fram.',
     notFoundDesc: 'Sidan finns inte. Kolla i stället hur stor del av ditt Steam-bibliotek som fungerar på Linux.',
     privacy: 'Integritet',
-    privacyDesc: 'Vad stillneedwindows gör med din Steam-profil: vad som läses, vad som sparas (nästan inget) och vilka andra som är inblandade.',
+    privacyDesc:
+      'Vad stillneedwindows gör med din Steam-profil: vad som läses, vad som sparas (nästan inget) och vilka andra som är inblandade.',
   },
   nav: {
     home: 'stillneedwindows, startsida',
@@ -23,7 +25,8 @@ const sv: typeof en = {
     skip: 'Hoppa till innehållet',
   },
   footer: {
-    disclaimer: 'Resultaten är uppskattningar baserade på rapporter från användare. Kolla ProtonDB innan du köper ett spel.',
+    disclaimer:
+      'Resultaten är uppskattningar baserade på rapporter från användare. Kolla ProtonDB innan du köper ett spel.',
     privacy: 'Integritet',
     source: 'Källkod',
     dataFrom: 'Data från {protondb}, {awacy} och {steam}.',
@@ -111,12 +114,14 @@ const sv: typeof en = {
     countBy: 'Räkna efter',
     byGames: 'Antal spel',
     byHours: 'Speltimmar',
-    hoursHidden: 'Speltiden är dold på den här profilen. Bocka ur "Håll alltid min totala speltid privat" i Steam för att se den.',
+    hoursHidden:
+      'Speltiden är dold på den här profilen. Bocka ur "Håll alltid min totala speltid privat" i Steam för att se den.',
     pctGames: 'av dina {n} spel fungerar bra på Linux',
     pctHours: 'av dina {h} var i spel som fungerar bra',
     verdictKicker: 'Besked',
     runsWellNote: 'Fungerar bra = Native, Platinum och Gold. Pending = inga ProtonDB-rapporter än.',
-    failed: '{n} spel kunde inte kollas helt just nu; resultatet kan vara fel. | {n} spel kunde inte kollas helt just nu; resultatet kan vara fel.',
+    failed:
+      '{n} spel kunde inte kollas helt just nu; resultatet kan vara fel. | {n} spel kunde inte kollas helt just nu; resultatet kan vara fel.',
     checkAgain: 'Kolla igen',
     barLabel: 'Biblioteket per nivå: {parts}',
     blockersTitle: 'Det här håller dig kvar på Windows',
@@ -130,15 +135,22 @@ const sv: typeof en = {
     shareTitle: 'Behöver mitt Steam-bibliotek fortfarande Windows?',
     shareText: '{pct} % av mitt Steam-bibliotek fungerar bra på Linux. {verdict}',
     sourcesTitle: 'Var siffrorna kommer ifrån',
-    sourcesText: 'Nivåerna kommer från rapporter på {protondb}, native-versioner och Deck-betyg från {steam}, anti-fusk-status från {awacy}. {how}',
+    sourcesText:
+      'Nivåerna kommer från rapporter på {protondb}, native-versioner och Deck-betyg från {steam}, anti-fusk-status från {awacy}. {how}',
     sourcesHow: 'Så räknas beskedet',
     steamStore: 'Steam-butiken',
   },
   verdicts: {
     optional: { headline: 'Windows är valfritt.', sub: 'Nästan allt du spelar fungerar på Linux. Undantagen är få.' },
-    mostly: { headline: 'Nästan redo.', sub: 'Men {pct} % är borked. Behåll en Windows-partition, eller säg hejdå till de spelen.' },
+    mostly: {
+      headline: 'Nästan redo.',
+      sub: 'Men {pct} % är borked. Behåll en Windows-partition, eller säg hejdå till de spelen.',
+    },
     dualboot: { headline: 'Dubbelboot-läge.', sub: 'Linux för det mesta, Windows vid sidan om för resten.' },
-    needed: { headline: 'Du behöver fortfarande Windows.', sub: 'För mycket av biblioteket fungerar inte än. Kolla igen om ett år.' },
+    needed: {
+      headline: 'Du behöver fortfarande Windows.',
+      sub: 'För mycket av biblioteket fungerar inte än. Kolla igen om ett år.',
+    },
     empty: { headline: 'Inget att räkna.', sub: 'Byt till att räkna antal spel i stället.' },
   },
   games: {
@@ -269,7 +281,8 @@ const sv: typeof en = {
       },
     ],
     contactTitle: 'Kontakt',
-    contactText: 'stillneedwindows är ett hobbyprojekt med öppen källkod som drivs av en privatperson i Sverige. Har du frågor om integritet, skapa ett ärende på GitHub:',
+    contactText:
+      'stillneedwindows är ett hobbyprojekt med öppen källkod som drivs av en privatperson i Sverige. Har du frågor om integritet, skapa ett ärende på GitHub:',
   },
   notFoundPage: {
     title: 'Sidan finns inte',

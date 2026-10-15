@@ -55,8 +55,20 @@ function submit() {
       <p v-if="invalid" id="profile-error" class="m-0 text-sm text-danger" role="alert">{{ $t('search.invalid') }}</p>
       <button type="submit" class="btn btn-primary text-[17px]">
         {{ $t('search.submit') }}
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
-          stroke-linecap="round" stroke-linejoin="round" class="arrow" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="arrow"
+          aria-hidden="true"
+        >
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
       </button>
       <p id="profile-help" class="m-0 mt-1 text-sm leading-normal text-faint">
         {{ $t('search.help') }}

@@ -22,7 +22,9 @@ function submit() {
     <div class="anim-in flex flex-col gap-2.5" style="--i: 1">
       <h1 class="m-0 text-[34px] leading-tight font-black tracking-tight">{{ $t('notFound.title') }}</h1>
       <i18n-t scope="global" keypath="notFound.lead" tag="p" class="m-0 leading-normal text-muted">
-        <template #query><span class="font-mono break-all text-ink">{{ query }}</span></template>
+        <template #query
+          ><span class="font-mono break-all text-ink">{{ query }}</span></template
+        >
       </i18n-t>
     </div>
 
@@ -35,11 +37,13 @@ function submit() {
         autocomplete="off"
         autocapitalize="off"
         spellcheck="false"
-        class="field font-mono !border-danger-line"
+        class="field !border-danger-line font-mono"
         aria-invalid="true"
         :aria-describedby="invalid ? 'profile2-error' : undefined"
       />
-      <p v-if="invalid" id="profile2-error" class="m-0 text-sm text-danger" role="alert">{{ $t('notFound.invalid') }}</p>
+      <p v-if="invalid" id="profile2-error" class="m-0 text-sm text-danger" role="alert">
+        {{ $t('notFound.invalid') }}
+      </p>
       <button type="submit" class="btn btn-primary text-[17px]">{{ $t('common.retry') }}</button>
     </form>
 

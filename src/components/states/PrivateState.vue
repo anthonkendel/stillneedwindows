@@ -16,14 +16,33 @@ defineEmits<{ retry: [] }>()
       </p>
     </div>
 
-    <ol class="card anim-in m-0 flex flex-col gap-3 py-[18px] pr-[18px] pl-10 text-[15px] leading-normal text-ink-2" style="--i: 2">
-      <i18n-t scope="global" keypath="private.step1" tag="li"><template #term><strong class="text-ink">{{ $t('private.step1Term') }}</strong></template></i18n-t>
-      <i18n-t scope="global" keypath="private.step2" tag="li"><template #term><strong class="text-ink">{{ $t('private.step2Term') }}</strong></template></i18n-t>
+    <ol
+      class="card anim-in m-0 flex flex-col gap-3 py-[18px] pr-[18px] pl-10 text-[15px] leading-normal text-ink-2"
+      style="--i: 2"
+    >
+      <i18n-t scope="global" keypath="private.step1" tag="li"
+        ><template #term
+          ><strong class="text-ink">{{ $t('private.step1Term') }}</strong></template
+        ></i18n-t
+      >
+      <i18n-t scope="global" keypath="private.step2" tag="li"
+        ><template #term
+          ><strong class="text-ink">{{ $t('private.step2Term') }}</strong></template
+        ></i18n-t
+      >
       <i18n-t scope="global" keypath="private.step3" tag="li">
-        <template #a><strong class="text-ink">{{ $t('private.step3A') }}</strong></template>
-        <template #b><strong class="text-ink">{{ $t('private.step3B') }}</strong></template>
+        <template #a
+          ><strong class="text-ink">{{ $t('private.step3A') }}</strong></template
+        >
+        <template #b
+          ><strong class="text-ink">{{ $t('private.step3B') }}</strong></template
+        >
       </i18n-t>
-      <i18n-t scope="global" keypath="private.step4" tag="li"><template #term><strong class="text-ink">{{ $t('private.step4Term') }}</strong></template></i18n-t>
+      <i18n-t scope="global" keypath="private.step4" tag="li"
+        ><template #term
+          ><strong class="text-ink">{{ $t('private.step4Term') }}</strong></template
+        ></i18n-t
+      >
     </ol>
     <p class="m-0 text-sm leading-normal text-faint">{{ $t('private.note') }}</p>
 

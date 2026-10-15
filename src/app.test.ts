@@ -63,7 +63,10 @@ async function settle() {
 }
 
 describe('every screen renders in every language', () => {
-  const wrapper = mount(App, { global: { plugins: [createPinia(), i18n, router], stubs: { Transition: false, TransitionGroup: false } }, attachTo: document.body })
+  const wrapper = mount(App, {
+    global: { plugins: [createPinia(), i18n, router], stubs: { Transition: false, TransitionGroup: false } },
+    attachTo: document.body,
+  })
 
   async function visit(path: string) {
     await router.push(path)
@@ -103,13 +106,24 @@ describe('every screen renders in every language', () => {
   it('passes axe on every screen', async () => {
     const axe = (await import('axe-core')).default
     await setLocale('en')
-    for (const path of ['/', `/u/${STEAMID}`, `/u/${STEAMID}/games`, '/how-it-works', '/privacy', '/u/private', '/u/nobody', '/nope']) {
+    for (const path of [
+      '/',
+      `/u/${STEAMID}`,
+      `/u/${STEAMID}/games`,
+      '/how-it-works',
+      '/privacy',
+      '/u/private',
+      '/u/nobody',
+      '/nope',
+    ]) {
       await visit(path)
       const result = await axe.run(document.body, {
         // happy-dom can't compute colors; contrast is checked against the palette in README.
         rules: { 'color-contrast': { enabled: false } },
       })
-      const issues = result.violations.map((v) => `${path} ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)
+      const issues = result.violations.map(
+        (v) => `${path} ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`,
+      )
       expect(issues).toEqual([])
     }
   })

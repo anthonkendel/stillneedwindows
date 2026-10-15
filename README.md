@@ -15,6 +15,7 @@
 ## Contributing
 
 Issues and pull requests are welcome, especially:
+
 - a game whose tier or anti-cheat status looks wrong
 - translations (see [Languages](#languages))
 - accessibility problems
@@ -82,10 +83,11 @@ Target: WCAG 2.2 AA.
 - **API use from other sites:** the API answers only this site's own pages (`Sec-Fetch-Site` and `Origin` checks). It sends no CORS headers, so other websites can't call it or read it from their visitors' browsers.
 - **Scripts and bots:** a server-side script can still call any public API. To limit that, add one Vercel Firewall rate-limit rule (included on Hobby):
   1. Open Project → Firewall → Configure → New Rule.
-  2. If *Request Path* starts with `/api/`, then *Rate Limit*.
+  2. If _Request Path_ starts with `/api/`, then _Rate Limit_.
   3. Use a fixed window of 60 s, 60 requests, keyed by IP, with the default 429 action.
 
   A 600-game library is about 13 requests, so real visitors never hit this.
+
 - **Headers:**
   - A strict Content Security Policy: same-origin only, plus Steam avatar images.
   - HSTS.
@@ -111,17 +113,18 @@ cp .env.example .env   # add STEAM_API_KEY from https://steamcommunity.com/dev/a
 npm install
 npm run dev            # Vite on :5173, API on :8787 (proxied under /api)
 npm test
+npm run format         # Prettier (with Tailwind class sorting)
 npm run build
 ```
 
 ## Configuration
 
-| Variable | Required | What it does |
-|---|---|---|
-| `STEAM_API_KEY` | Yes | Free key from [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey). Server only. |
-| `VITE_SITE_URL` | Yes in production | Public address, used for canonical URLs, link previews, robots.txt and the sitemap. |
-| `VITE_CONTACT` | No | Privacy contact (email or URL). Defaults to this repo's GitHub issues. |
-| `KV_REST_API_URL` / `KV_REST_API_TOKEN` | No | Upstash Redis cache. Set automatically by the Vercel integration. `UPSTASH_REDIS_REST_*` also works. Without them, the cache is memory only. |
+| Variable                                | Required          | What it does                                                                                                                                 |
+| --------------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `STEAM_API_KEY`                         | Yes               | Free key from [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey). Server only.                                           |
+| `VITE_SITE_URL`                         | Yes in production | Public address, used for canonical URLs, link previews, robots.txt and the sitemap.                                                          |
+| `VITE_CONTACT`                          | No                | Privacy contact (email or URL). Defaults to this repo's GitHub issues.                                                                       |
+| `KV_REST_API_URL` / `KV_REST_API_TOKEN` | No                | Upstash Redis cache. Set automatically by the Vercel integration. `UPSTASH_REDIS_REST_*` also works. Without them, the cache is memory only. |
 
 `VITE_*` values are built into the page, so changing them needs a redeploy.
 

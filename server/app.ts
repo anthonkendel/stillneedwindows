@@ -89,7 +89,18 @@ const CompatQuery = z.object({
     .string()
     .max(MAX_BATCH * 11)
     .transform((s) => s.split(',').map(Number))
-    .pipe(z.array(z.number().int().positive().max(2 ** 32)).min(1).max(MAX_BATCH)),
+    .pipe(
+      z
+        .array(
+          z
+            .number()
+            .int()
+            .positive()
+            .max(2 ** 32),
+        )
+        .min(1)
+        .max(MAX_BATCH),
+    ),
 })
 
 /** ProtonDB tier, native build, Deck rating and anti-cheat for up to 50 apps. */

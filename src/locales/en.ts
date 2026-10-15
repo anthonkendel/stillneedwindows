@@ -18,7 +18,8 @@ export default {
       'How stillneedwindows checks a Steam library against ProtonDB, Steam and Are We Anti-Cheat Yet, and how the Linux verdict is worked out.',
     notFoundDesc: "This page doesn't exist. Check how much of your Steam library runs on Linux instead.",
     privacy: 'Privacy',
-    privacyDesc: 'What stillneedwindows does with your Steam profile: what is read, what is kept (almost nothing) and who else is involved.',
+    privacyDesc:
+      'What stillneedwindows does with your Steam profile: what is read, what is kept (almost nothing) and who else is involved.',
   },
   nav: {
     home: 'stillneedwindows, home',
@@ -114,12 +115,14 @@ export default {
     countBy: 'Count by',
     byGames: 'By games',
     byHours: 'By hours played',
-    hoursHidden: 'Hours are hidden on this profile. Untick "Always keep my total playtime private" on Steam to unlock them.',
+    hoursHidden:
+      'Hours are hidden on this profile. Untick "Always keep my total playtime private" on Steam to unlock them.',
     pctGames: 'of your {n} games run well on Linux',
     pctHours: 'of your {h} were in games that run well',
     verdictKicker: 'Verdict',
     runsWellNote: 'Runs well = Native, Platinum and Gold. Pending = no ProtonDB reports yet.',
-    failed: "{n} game couldn't be fully checked right now; results may be off. | {n} games couldn't be fully checked right now; results may be off.",
+    failed:
+      "{n} game couldn't be fully checked right now; results may be off. | {n} games couldn't be fully checked right now; results may be off.",
     checkAgain: 'Check again',
     barLabel: 'Library split by tier: {parts}',
     blockersTitle: 'Keeping you on Windows',
@@ -133,15 +136,25 @@ export default {
     shareTitle: 'Does my Steam library still need Windows?',
     shareText: '{pct}% of my Steam library runs well on Linux. {verdict}',
     sourcesTitle: 'Where these numbers come from',
-    sourcesText: 'Tiers come from {protondb} reports, native builds and Deck ratings from the {steam}, anti-cheat status from {awacy}. {how}',
+    sourcesText:
+      'Tiers come from {protondb} reports, native builds and Deck ratings from the {steam}, anti-cheat status from {awacy}. {how}',
     sourcesHow: 'How the verdict works',
     steamStore: 'Steam store',
   },
   verdicts: {
-    optional: { headline: 'Windows is optional.', sub: 'Nearly everything you play runs on Linux. The holdouts are few.' },
-    mostly: { headline: 'Mostly ready.', sub: 'But {pct}% is borked. Keep a Windows partition, or say goodbye to those.' },
+    optional: {
+      headline: 'Windows is optional.',
+      sub: 'Nearly everything you play runs on Linux. The holdouts are few.',
+    },
+    mostly: {
+      headline: 'Mostly ready.',
+      sub: 'But {pct}% is borked. Keep a Windows partition, or say goodbye to those.',
+    },
     dualboot: { headline: 'Dual-boot territory.', sub: 'Linux for most things, Windows on the side for the rest.' },
-    needed: { headline: 'You still need Windows.', sub: "Too much of your library doesn't run yet. Check back in a year." },
+    needed: {
+      headline: 'You still need Windows.',
+      sub: "Too much of your library doesn't run yet. Check back in a year.",
+    },
     empty: { headline: 'Nothing to count.', sub: 'Switch to counting by games instead.' },
   },
   games: {
@@ -232,9 +245,12 @@ export default {
       },
       pending: {
         q: 'Why are some games Pending?',
-        a: "Nobody has reported them on ProtonDB yet. They still count towards your total, so a big pile of obscure games pulls the number down. Many of them run fine; counting by hours played often tells a truer story.",
+        a: 'Nobody has reported them on ProtonDB yet. They still count towards your total, so a big pile of obscure games pulls the number down. Many of them run fine; counting by hours played often tells a truer story.',
       },
-      stores: { q: 'Does it check Epic, GOG or Xbox games?', a: 'No, Steam only. ProtonDB ratings are for Steam games.' },
+      stores: {
+        q: 'Does it check Epic, GOG or Xbox games?',
+        a: 'No, Steam only. ProtonDB ratings are for Steam games.',
+      },
       data: {
         q: 'Do you store my data?',
         a: "No profiles or game lists are stored. We only cache each game's compatibility for a day so checks stay fast.",
@@ -272,7 +288,8 @@ export default {
       },
     ],
     contactTitle: 'Contact',
-    contactText: 'stillneedwindows is an open-source hobby project run by a private individual in Sweden. For privacy questions, open an issue on GitHub:',
+    contactText:
+      'stillneedwindows is an open-source hobby project run by a private individual in Sweden. For privacy questions, open an issue on GitHub:',
   },
   notFoundPage: {
     title: 'Page not found',

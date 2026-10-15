@@ -75,10 +75,24 @@ const SOURCE_LIST = [
     <section class="flex flex-col" aria-labelledby="faq-h">
       <h2 id="faq-h" class="m-0 mb-2 text-[22px] font-extrabold">{{ t('how.faqTitle') }}</h2>
       <details v-for="f in FAQ" :id="f" :key="f" class="border-b border-line" :open="$route.hash === `#${f}`">
-        <summary class="row-hover -mx-2 flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 rounded-lg px-2 font-semibold">
+        <summary
+          class="row-hover -mx-2 flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 rounded-lg px-2 font-semibold"
+        >
           {{ t(`how.faq.${f}.q`) }}
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
-            stroke-linecap="round" stroke-linejoin="round" class="chevron shrink-0 text-muted" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="chevron shrink-0 text-muted"
+            aria-hidden="true"
+          >
+            <path d="M6 9l6 6 6-6" />
+          </svg>
         </summary>
         <p class="faq-body m-0 mb-4 text-[15px] leading-relaxed text-muted">{{ t(`how.faq.${f}.a`) }}</p>
       </details>

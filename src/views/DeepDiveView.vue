@@ -44,10 +44,12 @@ const chips = computed(() => (['all', ...TIERS] as Filter[]).filter((f) => f ===
 const visible = computed(() => {
   const q = search.value.trim().toLocaleLowerCase(locale.value)
   const rows = lib.rows.filter(
-    (r) => (filter.value === 'all' || r.tier === filter.value) && (!q || r.name.toLocaleLowerCase(locale.value).includes(q)),
+    (r) =>
+      (filter.value === 'all' || r.tier === filter.value) && (!q || r.name.toLocaleLowerCase(locale.value).includes(q)),
   )
   if (sort.value === 'name') return [...rows].sort((a, b) => a.name.localeCompare(b.name, locale.value))
-  if (sort.value === 'tier') return [...rows].sort((a, b) => TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || b.minutes - a.minutes)
+  if (sort.value === 'tier')
+    return [...rows].sort((a, b) => TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || b.minutes - a.minutes)
   return rows // already by playtime
 })
 const shown = computed(() => visible.value.slice(0, limit.value))
@@ -60,8 +62,18 @@ const shown = computed(() => visible.value.slice(0, limit.value))
         :to="{ name: 'results', params: { query: lib.key } }"
         class="group -mb-2 flex min-h-11 w-fit items-center gap-1.5 text-[15px] font-semibold no-underline"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
-          stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200 group-hover:-translate-x-0.5" aria-hidden="true">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="transition-transform duration-200 group-hover:-translate-x-0.5"
+          aria-hidden="true"
+        >
           <path d="M15 18l-6-6 6-6" />
         </svg>
         {{ t('games.back') }}
@@ -70,14 +82,26 @@ const shown = computed(() => visible.value.slice(0, limit.value))
       <div class="flex flex-col gap-1.5">
         <h1 class="m-0 text-[32px] font-black tracking-tight">{{ t('games.title') }}</h1>
         <p class="m-0 text-sm text-faint">
-          {{ t('games.subtitle', { name: lib.profile?.name, count: t('results.games', { n: formatNumber(lib.rows.length) }, lib.rows.length) }) }}
+          {{
+            t('games.subtitle', {
+              name: lib.profile?.name,
+              count: t('results.games', { n: formatNumber(lib.rows.length) }, lib.rows.length),
+            })
+          }}
         </p>
       </div>
 
       <div class="flex gap-2.5">
         <div class="flex min-w-0 flex-1 flex-col gap-1.5">
           <label for="q" class="text-[13px] font-semibold text-muted">{{ t('games.search') }}</label>
-          <input id="q" v-model="search" type="search" :placeholder="t('games.searchPlaceholder')" class="field min-h-12" @input="limit = PAGE" />
+          <input
+            id="q"
+            v-model="search"
+            type="search"
+            :placeholder="t('games.searchPlaceholder')"
+            class="field min-h-12"
+            @input="limit = PAGE"
+          />
         </div>
         <div class="flex shrink-0 flex-col gap-1.5">
           <label for="sort" class="text-[13px] font-semibold text-muted">{{ t('games.sort') }}</label>
@@ -93,7 +117,7 @@ const shown = computed(() => visible.value.slice(0, limit.value))
       <div
         role="group"
         :aria-label="t('games.filterLabel')"
-        class="chip-row no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 py-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
+        class="chip-row -mx-5 no-scrollbar flex gap-2 overflow-x-auto px-5 py-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
       >
         <button
           v-for="f in chips"
@@ -103,7 +127,12 @@ const shown = computed(() => visible.value.slice(0, limit.value))
           :aria-pressed="filter === f"
           @click="setFilter(f)"
         >
-          <span v-if="f !== 'all'" class="size-2.5 rounded-[3px]" :style="{ background: TIER_META[f].color }" aria-hidden="true" />
+          <span
+            v-if="f !== 'all'"
+            class="size-2.5 rounded-[3px]"
+            :style="{ background: TIER_META[f].color }"
+            aria-hidden="true"
+          />
           <span :lang="f === 'all' ? undefined : 'en'">{{ f === 'all' ? t('games.all') : TIER_META[f].label }}</span>
           <span class="tabular-nums opacity-80">{{ formatNumber(counts.get(f) ?? 0) }}</span>
         </button>
@@ -112,7 +141,12 @@ const shown = computed(() => visible.value.slice(0, limit.value))
       <p class="sr-only" aria-live="polite">{{ t('games.showing', { shown: shown.length, total: visible.length }) }}</p>
 
       <TransitionGroup tag="ul" name="list" class="relative m-0 flex list-none flex-col gap-2.5 p-0">
-        <li v-for="(r, i) in shown" :key="r.appid" class="card anim-in flex flex-col gap-2.5 p-4" :style="{ '--i': Math.min(i, 12) }">
+        <li
+          v-for="(r, i) in shown"
+          :key="r.appid"
+          class="card anim-in flex flex-col gap-2.5 p-4"
+          :style="{ '--i': Math.min(i, 12) }"
+        >
           <div class="flex items-center justify-between gap-3">
             <h2 class="m-0 min-w-0 text-base font-bold">{{ r.name }}</h2>
             <TierBadge :tier="r.tier" />
