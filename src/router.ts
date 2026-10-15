@@ -42,6 +42,12 @@ export const router = createRouter({
       meta: { title: 'meta.how', description: 'meta.howDesc', index: true },
     },
     {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('./views/PrivacyView.vue'),
+      meta: { title: 'meta.privacy', description: 'meta.privacyDesc', index: true },
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('./views/NotFoundView.vue'),

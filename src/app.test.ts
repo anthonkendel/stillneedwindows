@@ -91,6 +91,7 @@ describe('every screen renders in every language', () => {
       expect(wrapper.find('a[href="https://areweanticheatyet.com/game/shooter"]').exists()).toBe(true)
 
       expect(await visit('/how-it-works')).toContain(t('how.faqTitle'))
+      expect(await visit('/privacy')).toContain(t('privacy.lead'))
       expect(await visit('/u/private')).toContain(t('private.title'))
       expect(await visit('/u/nobody')).toContain(t('notFound.title'))
       expect(await visit('/no/such/page')).toContain(t('notFoundPage.title'))
@@ -102,7 +103,7 @@ describe('every screen renders in every language', () => {
   it('passes axe on every screen', async () => {
     const axe = (await import('axe-core')).default
     await setLocale('en')
-    for (const path of ['/', `/u/${STEAMID}`, `/u/${STEAMID}/games`, '/how-it-works', '/u/private', '/u/nobody', '/nope']) {
+    for (const path of ['/', `/u/${STEAMID}`, `/u/${STEAMID}/games`, '/how-it-works', '/privacy', '/u/private', '/u/nobody', '/nope']) {
       await visit(path)
       const result = await axe.run(document.body, {
         // happy-dom can't compute colors; contrast is checked against the palette in README.

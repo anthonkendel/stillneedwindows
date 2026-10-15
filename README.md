@@ -97,7 +97,7 @@ npm run build
 ## Deploy
 
 1. Import the repo in Vercel. The Vite preset and `vercel.json` handle the rest.
-2. Add the environment variables `STEAM_API_KEY` and `VITE_SITE_URL`.
+2. Add the environment variables `STEAM_API_KEY`, `VITE_SITE_URL` and `VITE_CONTACT` (privacy contact: an email or URL).
 3. Optional: add Upstash Redis from the Vercel Marketplace for a shared cache. It sets its own env vars.
 4. Add the domain under Project → Settings → Domains, then redeploy so `VITE_SITE_URL` takes effect.
 5. Submit `https://<domain>/sitemap.xml` in Google Search Console.

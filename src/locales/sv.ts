@@ -14,6 +14,8 @@ const sv: typeof en = {
     howDesc:
       'Så kollar stillneedwindows ett Steam-bibliotek mot ProtonDB, Steam och Are We Anti-Cheat Yet, och så räknas Linux-beskedet fram.',
     notFoundDesc: 'Sidan finns inte. Kolla i stället hur stor del av ditt Steam-bibliotek som fungerar på Linux.',
+    privacy: 'Integritet',
+    privacyDesc: 'Vad stillneedwindows gör med din Steam-profil: vad som läses, vad som sparas (nästan inget) och vilka andra som är inblandade.',
   },
   nav: {
     home: 'stillneedwindows, startsida',
@@ -21,6 +23,8 @@ const sv: typeof en = {
     skip: 'Hoppa till innehållet',
   },
   footer: {
+    disclaimer: 'Resultaten är uppskattningar baserade på rapporter från användare. Kolla ProtonDB innan du köper ett spel.',
+    privacy: 'Integritet',
     dataFrom: 'Data från {protondb}, {awacy} och {steam}.',
     steamApi: 'Steams webb-API',
     notAffiliated: 'Inte knutet till Valve eller ProtonDB.',
@@ -236,6 +240,36 @@ const sv: typeof en = {
         a: 'Nej. Nivåerna bygger på rapporter från många olika datorer. AMD- och Intel-grafik brukar ge minst överraskningar på Linux.',
       },
     },
+  },
+  privacy: {
+    title: 'Integritet',
+    updated: 'Senast uppdaterad 15 oktober 2026',
+    lead: 'Kort sagt: inga konton, inga kakor, ingen spårning, och ditt Steam-bibliotek sparas aldrig.',
+    sections: [
+      {
+        title: 'Vad vi läser',
+        body: 'När du kollar en profil hämtar vi profilens Steam-ID, visningsnamn, profilbild, ägda spel och speltid från Steams öppna API. Det är samma information som vem som helst kan se på en offentlig Steam-profil.',
+      },
+      {
+        title: 'Vad vi sparar',
+        body: 'Inget om dig. Resultatet räknas fram direkt och finns bara i din webbläsarflik. Vi cachar varje spels kompatibilitet (till exempel: spel 1091500 är Gold på ProtonDB) i upp till ett dygn så att kollarna går snabbt. Den cachen innehåller inga personuppgifter.',
+      },
+      {
+        title: 'I din webbläsare',
+        body: 'Inga kakor. Den senast kollade profilen sparas i sessionStorage så att loggan kan ta dig tillbaka till ditt resultat. Den försvinner när du stänger fliken.',
+      },
+      {
+        title: 'Vilka andra som är inblandade',
+        body: 'Sajten körs på Vercel och spelcachen på Upstash, båda i USA. Som alla webbhotell sparar Vercel kortlivade loggar över anrop, med din IP-adress och adressen du besökte, vilket vid en koll innehåller profilnamnet. Det är vår server, inte din webbläsare, som kontaktar Steam, ProtonDB och Are We Anti-Cheat Yet. Profilbilder laddas direkt från Steams bildservrar, så Steam ser den förfrågan.',
+      },
+      {
+        title: 'Varför, och dina rättigheter',
+        body: 'Vi behandlar uppgifterna bara för att göra kollen du ber om (berättigat intresse, artikel 6.1 f i GDPR). Eftersom vi inte sparar profiler finns det normalt inget att visa eller radera, men du kan alltid fråga. Du kan också klaga hos Integritetsskyddsmyndigheten (IMY).',
+      },
+    ],
+    contactTitle: 'Kontakt',
+    contactText: 'stillneedwindows är ett hobbyprojekt som drivs av en privatperson i Sverige. Frågor om integritet:',
+    contactMissing: 'Kontaktuppgifter kommer snart.',
   },
   notFoundPage: {
     title: 'Sidan finns inte',

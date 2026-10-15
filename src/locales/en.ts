@@ -17,6 +17,8 @@ export default {
     howDesc:
       'How stillneedwindows checks a Steam library against ProtonDB, Steam and Are We Anti-Cheat Yet, and how the Linux verdict is worked out.',
     notFoundDesc: "This page doesn't exist. Check how much of your Steam library runs on Linux instead.",
+    privacy: 'Privacy',
+    privacyDesc: 'What stillneedwindows does with your Steam profile: what is read, what is kept (almost nothing) and who else is involved.',
   },
   nav: {
     home: 'stillneedwindows, home',
@@ -24,6 +26,8 @@ export default {
     skip: 'Skip to content',
   },
   footer: {
+    disclaimer: 'Results are estimates based on community reports. Check ProtonDB before buying a game.',
+    privacy: 'Privacy',
     dataFrom: 'Data from {protondb}, {awacy} and the {steam}.',
     steamApi: 'Steam Web API',
     notAffiliated: 'Not affiliated with Valve or ProtonDB.',
@@ -239,6 +243,36 @@ export default {
         a: 'No. Tiers come from reports across many machines. AMD and Intel graphics tend to have the fewest surprises on Linux.',
       },
     },
+  },
+  privacy: {
+    title: 'Privacy',
+    updated: 'Last updated 15 October 2026',
+    lead: 'Short version: no accounts, no cookies, no tracking, and your Steam library is never stored.',
+    sections: [
+      {
+        title: 'What we read',
+        body: "When you check a profile, we ask Steam's public API for that profile's Steam ID, display name, avatar, owned games and playtime. That is the same information anyone can see on a public Steam profile.",
+      },
+      {
+        title: 'What we keep',
+        body: "Nothing about you. The result is worked out on the fly and lives only in your browser tab. We cache each game's compatibility (for example: game 1091500 is Gold on ProtonDB) for up to a day so checks are fast. That cache contains no personal data.",
+      },
+      {
+        title: 'In your browser',
+        body: 'No cookies. The last profile you checked is kept in sessionStorage so the logo can take you back to your results. It disappears when you close the tab.',
+      },
+      {
+        title: 'Who else is involved',
+        body: "The site runs on Vercel and the game cache on Upstash, both in the US. Like any web host, Vercel keeps short-lived request logs that include your IP address and the address you requested, which for a check includes the profile name. Our server, not your browser, contacts Steam, ProtonDB and Are We Anti-Cheat Yet. Profile pictures load straight from Steam's image servers, so Steam sees that request.",
+      },
+      {
+        title: 'Why, and your rights',
+        body: "We process this only to run the check you ask for (legitimate interest, GDPR article 6.1.f). Because we don't store profiles, there is normally nothing to access or delete, but you can always ask. You can also complain to the Swedish Authority for Privacy Protection (IMY).",
+      },
+    ],
+    contactTitle: 'Contact',
+    contactText: 'stillneedwindows is a hobby project run by a private individual in Sweden. Questions about privacy:',
+    contactMissing: 'Contact details coming soon.',
   },
   notFoundPage: {
     title: 'Page not found',

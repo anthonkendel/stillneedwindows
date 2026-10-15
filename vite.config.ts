@@ -4,7 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 
 /** Indexable pages. Personal result pages (/u/…) are deliberately left out. */
-const PUBLIC_PAGES = ['/', '/how-it-works']
+const PUBLIC_PAGES = ['/', '/how-it-works', '/privacy']
 
 /**
  * Fills __SITE_URL__ in index.html and writes robots.txt and sitemap.xml,
