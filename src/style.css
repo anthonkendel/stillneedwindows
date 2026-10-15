@@ -1,0 +1,90 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --color-bg: #0d1014;
+  --color-surface: #12161b;
+  --color-field: #151a20;
+  --color-raised: #1a2028;
+  --color-line: #1f252d;
+  --color-line-strong: #2c343e;
+
+  --color-ink: #e9edf2;
+  --color-ink-2: #c9d1da;
+  --color-muted: #a9b3bf;
+  --color-faint: #8a95a3;
+  --color-dim: #6b7684;
+
+  --color-accent: #b39bff;
+  --color-accent-soft: #c4b1ff;
+  --color-danger: #ff8a8e;
+  --color-danger-line: #f0555b;
+}
+
+html {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+}
+
+a {
+  color: var(--color-accent-soft);
+}
+
+@layer components {
+  .btn {
+    display: flex;
+    height: 3.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    padding: 0 1.5rem;
+    font-size: 1rem;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background: var(--color-accent);
+    color: var(--color-bg);
+    font-weight: 800;
+  }
+  .btn-secondary {
+    border: 1px solid var(--color-line-strong);
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .card {
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+    border-radius: 0.875rem;
+  }
+  .field {
+    width: 100%;
+    height: 3.5rem;
+    box-sizing: border-box;
+    padding: 0 1rem;
+    background: var(--color-field);
+    border: 1px solid var(--color-line-strong);
+    border-radius: 0.75rem;
+    color: var(--color-ink);
+    font-size: 1rem;
+  }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: var(--color-faint);
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
