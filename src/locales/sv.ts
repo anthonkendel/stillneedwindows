@@ -7,6 +7,13 @@ const sv: typeof en = {
     games: 'Alla spel per nivå',
     how: 'Så funkar det',
     notFound: 'Sidan finns inte',
+    searchDesc:
+      'Klistra in din Steam-profil och se hur stor del av biblioteket som fungerar på Linux, spel för spel, med ProtonDB-nivåer och anti-fusk-status. Gratis, ingen inloggning.',
+    resultsDesc: 'Hur stor del av det här Steam-biblioteket som fungerar på Linux, räknat i antal spel och i speltimmar.',
+    gamesDesc: 'Alla spel i det här Steam-biblioteket med ProtonDB-nivå, Steam Deck-betyg och anti-fusk-status.',
+    howDesc:
+      'Så kollar stillneedwindows ett Steam-bibliotek mot ProtonDB, Steam och Are We Anti-Cheat Yet, och så räknas Linux-beskedet fram.',
+    notFoundDesc: 'Sidan finns inte. Kolla i stället hur stor del av ditt Steam-bibliotek som fungerar på Linux.',
   },
   nav: {
     home: 'stillneedwindows, startsida',
@@ -17,7 +24,6 @@ const sv: typeof en = {
     dataFrom: 'Data från {protondb}, {awacy} och {steam}.',
     steamApi: 'Steams webb-API',
     notAffiliated: 'Inte knutet till Valve eller ProtonDB.',
-    language: 'Språk',
   },
   common: {
     newTab: '(öppnas i en ny flik)',

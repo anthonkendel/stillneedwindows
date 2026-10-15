@@ -10,6 +10,13 @@ export default {
     games: 'Every game by tier',
     how: 'How it works',
     notFound: 'Page not found',
+    searchDesc:
+      'Paste your Steam profile and see how much of your library runs on Linux, game by game, with ProtonDB tiers and anti-cheat status. Free, no login.',
+    resultsDesc: 'How much of this Steam library runs on Linux, by number of games and by hours played.',
+    gamesDesc: 'Every game in this Steam library with its ProtonDB tier, Steam Deck rating and anti-cheat status.',
+    howDesc:
+      'How stillneedwindows checks a Steam library against ProtonDB, Steam and Are We Anti-Cheat Yet, and how the Linux verdict is worked out.',
+    notFoundDesc: "This page doesn't exist. Check how much of your Steam library runs on Linux instead.",
   },
   nav: {
     home: 'stillneedwindows, home',
@@ -20,7 +27,6 @@ export default {
     dataFrom: 'Data from {protondb}, {awacy} and the {steam}.',
     steamApi: 'Steam Web API',
     notAffiliated: 'Not affiliated with Valve or ProtonDB.',
-    language: 'Language',
   },
   common: {
     newTab: '(opens in a new tab)',

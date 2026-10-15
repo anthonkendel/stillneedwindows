@@ -1,36 +1,19 @@
 import { createI18n } from 'vue-i18n'
 import en from './locales/en'
 
+/** The site follows the browser: Swedish if the visitor prefers it, English otherwise. */
 export const LOCALES = [
-  { code: 'en', name: 'English', htmlLang: 'en' },
-  { code: 'sv', name: 'Svenska', htmlLang: 'sv' },
-  { code: 'es', name: 'Español', htmlLang: 'es' },
-  { code: 'zh', name: '中文（简体）', htmlLang: 'zh-Hans' },
-  { code: 'hi', name: 'हिन्दी', htmlLang: 'hi' },
+  { code: 'en', name: 'English', htmlLang: 'en', og: 'en_US' },
+  { code: 'sv', name: 'Svenska', htmlLang: 'sv', og: 'sv_SE' },
 ] as const
 
 export type LocaleCode = (typeof LOCALES)[number]['code']
 
-const STORAGE_KEY = 'snw-locale'
 const isLocale = (v: unknown): v is LocaleCode => LOCALES.some((l) => l.code === v)
 
-// English ships in the main bundle; the others load on demand.
-const loaders: Record<Exclude<LocaleCode, 'en'>, () => Promise<{ default: typeof en }>> = {
-  sv: () => import('./locales/sv'),
-  es: () => import('./locales/es'),
-  zh: () => import('./locales/zh'),
-  hi: () => import('./locales/hi'),
-}
-
-/** Saved choice first, then the browser's language list, then English. */
-export function detectLocale(): LocaleCode {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (isLocale(saved)) return saved
-  } catch {
-    /* storage blocked */
-  }
-  for (const lang of navigator.languages ?? [navigator.language]) {
+/** First supported language in the browser's preference list, else English. */
+export function detectLocale(languages: readonly string[] = navigator.languages ?? [navigator.language]): LocaleCode {
+  for (const lang of languages) {
     const base = lang.toLowerCase().split('-')[0]
     if (isLocale(base)) return base
   }
@@ -50,25 +33,21 @@ export function currentLocale(): LocaleCode {
   return i18n.global.locale.value as LocaleCode
 }
 
-async function ensureLoaded(code: LocaleCode) {
-  if (code === 'en' || i18n.global.availableLocales.includes(code)) return
-  const { default: messages } = await loaders[code]()
-  i18n.global.setLocaleMessage(code, messages)
-}
-
-/** Switches language, loading its messages first. `persist` remembers an explicit choice. */
-export async function setLocale(code: LocaleCode, persist = true) {
-  try {
-    await ensureLoaded(code)
-  } catch {
-    return // chunk failed to load; stay on the current language
+export async function setLocale(code: LocaleCode) {
+  if (code === 'sv' && !i18n.global.availableLocales.includes('sv')) {
+    try {
+      i18n.global.setLocaleMessage('sv', (await import('./locales/sv')).default)
+    } catch {
+      return // chunk failed to load; stay in English
+    }
   }
   i18n.global.locale.value = code
-  document.documentElement.lang = LOCALES.find((l) => l.code === code)!.htmlLang
-  if (!persist) return
-  try {
-    localStorage.setItem(STORAGE_KEY, code)
-  } catch {
-    /* storage blocked */
-  }
+  const meta = LOCALES.find((l) => l.code === code)!
+  document.documentElement.lang = meta.htmlLang
+  document.querySelector('meta[property="og:locale"]')?.setAttribute('content', meta.og)
+}
+
+// Follow the browser if its language preference changes while the page is open.
+if (typeof window !== 'undefined') {
+  window.addEventListener('languagechange', () => setLocale(detectLocale()))
 }

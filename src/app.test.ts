@@ -73,7 +73,7 @@ describe('every screen renders in every language', () => {
 
   for (const { code } of LOCALES) {
     it(code, async () => {
-      await setLocale(code, false)
+      await setLocale(code)
       const t = i18n.global.t
 
       expect(await visit('/')).toContain(t('search.title'))
@@ -101,7 +101,7 @@ describe('every screen renders in every language', () => {
 
   it('passes axe on every screen', async () => {
     const axe = (await import('axe-core')).default
-    await setLocale('en', false)
+    await setLocale('en')
     for (const path of ['/', `/u/${STEAMID}`, `/u/${STEAMID}/games`, '/how-it-works', '/u/private', '/u/nobody', '/nope']) {
       await visit(path)
       const result = await axe.run(document.body, {
@@ -111,6 +111,27 @@ describe('every screen renders in every language', () => {
       const issues = result.violations.map((v) => `${path} ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)
       expect(issues).toEqual([])
     }
+  })
+
+  it('sets search-engine tags per page', async () => {
+    await setLocale('en')
+    const meta = (name: string) => document.head.querySelector<HTMLMetaElement>(`meta[name="${name}"]`)?.content
+    const canonical = () => document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href
+
+    await visit('/how-it-works')
+    expect(meta('robots')).toBe('index, follow')
+    expect(meta('description')).toBe(i18n.global.t('meta.howDesc'))
+    expect(canonical()).toBe('https://stillneedwindows.com/how-it-works')
+
+    await visit(`/u/${STEAMID}`)
+    expect(meta('robots')).toBe('noindex, follow')
+    expect(canonical()).toBeUndefined()
+
+    await setLocale('sv')
+    await settle()
+    expect(meta('description')).toBe(i18n.global.t('meta.resultsDesc'))
+    expect(document.documentElement.lang).toBe('sv')
+    await setLocale('en')
   })
 
   it('remembers the last checked library for this tab', async () => {

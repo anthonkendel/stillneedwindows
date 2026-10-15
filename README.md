@@ -20,12 +20,18 @@ Does your Steam library still need Windows? Paste a Steam profile and get one nu
 
 ## Languages
 
-English, Swedish, Spanish, Simplified Chinese and Hindi. The app picks the visitor's browser language (or their saved choice from the footer), and only the active language is downloaded.
+English and Swedish. There is no language switcher: Swedish if the browser prefers it, English otherwise. The Swedish copy is only downloaded when it's used.
 
-- Copy lives in `src/locales/`. `en.ts` is the source of truth; `locales.test.ts` fails if another language is missing a key or a `{placeholder}`.
-- To add a language: copy `en.ts`, translate it, and add it to `LOCALES` and `loaders` in `src/i18n.ts`.
-- ProtonDB tier names (Platinum, Gold…) stay in English everywhere because they are ProtonDB's own labels.
-- The non-English copy hasn't been reviewed by native speakers yet.
+- Copy lives in `src/locales/`. `en.ts` is the source of truth; `locales.test.ts` fails if `sv.ts` is missing a key or a `{placeholder}`.
+- ProtonDB tier names (Platinum, Gold…) stay in English in both languages because they are ProtonDB's own labels.
+
+## SEO and sharing
+
+- **Indexed pages:** only the front page and How it works. Each gets its own title, description and canonical URL (`src/lib/head.ts`). Both are listed in `sitemap.xml`.
+- **Not indexed:** personal result pages (`/u/…`) send `noindex` as a header and a meta tag. They are not blocked in robots.txt, because crawlers need to fetch them to see the noindex.
+- **Static tags for link previews:** `index.html` carries Open Graph, Twitter card and JSON-LD tags for crawlers that don't run JavaScript (Discord, Slack, X…). The share image is `public/og.png`.
+- **Domain:** set once with `VITE_SITE_URL`. The build fills it into `index.html`, `robots.txt` and `sitemap.xml`.
+- **Search engines read English:** they don't send a language preference, so Swedish copy isn't indexed. That would need separate `/sv/` URLs.
 
 ## Accessibility
 
@@ -39,8 +45,8 @@ Target: WCAG 2.2 AA.
   - The progress bar has values, and loading progress, the verdict and the filter result count are announced.
   - The chart has a text alternative, and links that open a new tab say so.
 - **Motion:** every animation is switched off under `prefers-reduced-motion`. Nothing blinks or moves for longer than 5 seconds.
-- **Language:** `<html lang>` follows the chosen language, and English-only terms (tier names) are marked `lang="en"`.
-- **Tests:** `src/app.test.ts` renders every screen in every language with axe-core and fails on any violation or missing translation. Contrast is excluded there because the simulated DOM can't compute colors.
+- **Language:** `<html lang>` follows the active language, and English-only terms (tier names) are marked `lang="en"`.
+- **Tests:** `src/app.test.ts` renders every screen in both languages, runs axe-core on each, and fails on any violation or missing translation. Contrast is excluded there because the simulated DOM can't compute colors.
 - **Still needed:** an automated test isn't an audit. Before calling it compliant, test with a real screen reader (VoiceOver, NVDA) and at 200% zoom.
 
 ## Stack
@@ -67,7 +73,9 @@ npm run build
 ## Deploy
 
 1. Import the repo in Vercel. The Vite preset and `vercel.json` handle the rest.
-2. Add `STEAM_API_KEY` as an environment variable.
-3. Optional: add Upstash Redis from the Vercel Marketplace for a shared cache. It sets the env vars itself.
+2. Add the environment variables `STEAM_API_KEY` and `VITE_SITE_URL`.
+3. Optional: add Upstash Redis from the Vercel Marketplace for a shared cache. It sets its own env vars.
+4. Add the domain under Project → Settings → Domains, then redeploy so `VITE_SITE_URL` takes effect.
+5. Submit `https://<domain>/sitemap.xml` in Google Search Console.
 
 Not affiliated with Valve or ProtonDB.
