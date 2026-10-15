@@ -49,6 +49,30 @@ Target: WCAG 2.2 AA.
 - **Tests:** `src/app.test.ts` renders every screen in both languages, runs axe-core on each, and fails on any violation or missing translation. Contrast is excluded there because the simulated DOM can't compute colors.
 - **Still needed:** an automated test isn't an audit. Before calling it compliant, test with a real screen reader (VoiceOver, NVDA) and at 200% zoom.
 
+## Performance and cost
+
+- **Cache:** game compatibility goes through two layers. The first is memory in the function (10 min), the second is Upstash Redis (24 h, or 6 h when there are no reports).
+- **Writes:** each batch of 50 games is one `MSET` command, so a 600-game library costs about 12 Redis writes, not 600.
+- **HTTP caching:** compat responses are cached by browsers for 1 h and by the Vercel CDN for 24 h. Ids are sorted per batch so repeat checks hit the same URLs. Profiles are cached only in the visitor's own browser (5 min) and never on the CDN. Errors and private profiles are never cached.
+- **Assets:** hashed assets are cached for a year. Fonts are self-hosted variable fonts, with no Google Fonts requests.
+- **Upstreams:** at most 6 ProtonDB requests at a time per batch.
+
+## Security
+
+- **API use from other sites:** the API answers only this site's own pages (`Sec-Fetch-Site` and `Origin` checks). It sends no CORS headers, so other websites can't call it or read it from their visitors' browsers.
+- **Scripts and bots:** a server-side script can still call any public API. To limit that, add one Vercel Firewall rate-limit rule (included on Hobby):
+  1. Open Project → Firewall → Configure → New Rule.
+  2. If *Request Path* starts with `/api/`, then *Rate Limit*.
+  3. Use a fixed window of 60 s, 60 requests, keyed by IP, with the default 429 action.
+
+  A 600-game library is about 13 requests, so real visitors never hit this.
+- **Headers:**
+  - A strict Content Security Policy: same-origin only, plus Steam avatar images.
+  - HSTS.
+  - `X-Frame-Options: DENY` and `nosniff`.
+  - COOP and a locked-down Permissions-Policy.
+- **Input and secrets:** inputs are validated with Zod, with batch and length limits. The Steam API key never leaves the server, and errors don't expose internals.
+
 ## Stack
 
 Vue 3, TypeScript, Vue Router, Pinia and Tailwind CSS 4 on the front. Hono and Zod on the back, deployed as one Vercel Function (`api/index.ts`).

@@ -5,7 +5,7 @@ import { getJson } from './http.js'
 
 // Are We Anti-Cheat Yet publishes its data set as JSON on GitHub.
 const SOURCE = 'https://raw.githubusercontent.com/AreWeAntiCheatYet/AreWeAntiCheatYet/master/games.json'
-const CACHE_KEY = 'awacy:v2'
+const CACHE_KEY = 'awacy:v3'
 const TTL = 60 * 60 * 24
 
 const Entry = z.looseObject({
@@ -48,7 +48,7 @@ export async function getAntiCheatTable(): Promise<Table> {
   if (!table) {
     try {
       table = parseAntiCheatList(await getJson('awacy', SOURCE, 15_000))
-      if (Object.keys(table).length > 0) await cache.set(CACHE_KEY, table, TTL)
+      if (Object.keys(table).length > 0) await cache.mset([{ key: CACHE_KEY, value: table, ttlSeconds: TTL }])
     } catch (err) {
       console.warn('anti-cheat list unavailable', err)
       return memo?.table ?? {}

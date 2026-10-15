@@ -16,6 +16,8 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@hono/node-server": "^2.1.5",
     "@upstash/redis": "^1.39.0",
     "hono": "^4.13.13",

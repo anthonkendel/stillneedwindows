@@ -3,8 +3,8 @@
 /* Colors are checked against WCAG 2.2 AA on the dark ground (see README):
    text ≥ 4.5:1, control borders and chart segments ≥ 3:1. */
 @theme {
-  --font-sans: 'Archivo', 'Noto Sans', 'Noto Sans SC', 'Noto Sans Devanagari', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: 'Archivo Variable', 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
 
   --color-bg: #0d1014;
   --color-surface: #12161b;
