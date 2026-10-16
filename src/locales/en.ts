@@ -378,11 +378,11 @@ export default {
       },
       wishlist: {
         q: 'How does the wishlist check work?',
-        a: "Like the library check: every game gets its ProtonDB tier and anti-cheat status, and the same verdict rules apply. Games that aren't released yet count as Pending. Steam only shows a wishlist when Game details is public.",
+        a: "Open the Wishlist tab next to Games and Hours played on your result. It works like the library check: every game gets its ProtonDB tier and anti-cheat status, and the same verdict rules apply. Games that aren't released yet count as Pending. Steam only shows a wishlist when Game details is public.",
       },
       group: {
         q: 'How does the friend group check work?',
-        a: 'Add up to three friends, from your friends list or by profile link. We read each library, find the games you all own, and show the ones that run well on Linux for everyone, plus the ones only one of you is missing. Every friend needs public game details. Nothing about the group is stored.',
+        a: 'Add up to three friends, from your friends list or by profile link. We read each library, find the games you all own, and show the ones that run well on Linux for everyone, plus the ones only one of you is missing. Five or more games that run well for everyone means "Game night is on", one to four is "Slim pickings", and none is "Not on Linux, not yet". Every friend needs public game details. Nothing about the group is stored.',
       },
       hardware: {
         q: 'Is my hardware taken into account?',

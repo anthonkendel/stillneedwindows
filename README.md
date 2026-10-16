@@ -8,7 +8,7 @@
 
 - **One verdict:** counted by number of games or by hours played, so the games you actually play weigh the most.
 - **Every game checked:** its ProtonDB tier (Native → Borked), Steam Deck rating and anti-cheat status, each linked to its source.
-- **Wishlist check:** see how much of your Steam wishlist runs on Linux before you buy, with unreleased games marked.
+- **Wishlist check:** a Wishlist tab next to Games and Hours played shows how much of your Steam wishlist runs on Linux before you buy, with unreleased games marked.
 - **Friend group check:** pick up to three friends (from your friends list or by profile link) and see the games you all own that run on Linux, the ones only one of you is missing, and the ones anti-cheat blocks.
 - **Blockers called out:** online games whose anti-cheat blocks Linux are flagged, so you know which games keep you on Windows and why.
 - **No login, no cookies, no tracking.** Profiles are never stored. See [the privacy page](https://stillneedwindows.vercel.app/privacy).
@@ -35,7 +35,8 @@ Compatibility data comes from [ProtonDB](https://www.protondb.com) and [Are We A
    - **Native Linux build**, **Steam Deck rating**, store **name**, **release state** and **multiplayer** categories from Steam's `IStoreBrowseService/GetItems`
    - **Anti-cheat status** from [Are We Anti-Cheat Yet](https://github.com/AreWeAntiCheatYet/AreWeAntiCheatYet)
 3. Each game's compatibility is cached for 24 h (6 h when ProtonDB has no reports) in Upstash Redis, or in memory without it. Responses are also CDN-cached for an hour.
-4. The verdict maths lives in `shared/verdict.ts`:
+4. Pages: the verdict (`/u/:id`, with `?by=hours`) and the wishlist (`/u/:id/wishlist`) are tabs inside one layout (`UserLayout.vue`), so switching only swaps the content. The friend picker (`/u/:id/friends`) and group result (`/u/:id/group?with=…`) are separate pages, reached from the "Compare with friends" card.
+5. The verdict maths lives in `shared/verdict.ts`:
    - Native, Platinum and Gold count as "runs well"
    - Games whose anti-cheat blocks Linux count as Borked
    - **Windows is optional:** 70%+ runs well and under 10% is Borked
@@ -43,6 +44,7 @@ Compatibility data comes from [ProtonDB](https://www.protondb.com) and [Are We A
    - **Dual-boot territory:** 40–69% runs well
    - **You still need Windows:** under 40% runs well
    - Wishlists use the same rules (with their own wording); games that aren't released yet count as Pending.
+   - **Friend groups** (`groupVerdictFor`), by the number of shared games that run well for everyone: **Game night is on** at 5 or more, **Slim pickings** at 1–4, **Not on Linux, not yet** at none.
 
 ## Languages
 
@@ -68,7 +70,7 @@ Target: WCAG 2.2 AA.
 - **Keyboard:** skip link, visible focus on everything, and focus moves to the new page on navigation. All targets are at least 44×44 px.
 - **Screen readers:**
   - Landmarks and heading order on every page.
-  - Toggles and filters are real buttons with `aria-pressed`.
+  - Toggles and filters are real buttons with `aria-pressed`. The Games / Hours played / Wishlist tabs are links with `aria-current`, so each view has its own address.
   - The progress bar has values, and loading progress, the verdict and the filter result count are announced.
   - The chart has a text alternative, and links that open a new tab say so.
 - **Motion:** every animation is switched off under `prefers-reduced-motion`. Nothing blinks or moves for longer than 5 seconds.

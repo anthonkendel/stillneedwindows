@@ -375,11 +375,11 @@ const sv: typeof en = {
       },
       wishlist: {
         q: 'Hur fungerar kollen av önskelistan?',
-        a: 'Som kollen av biblioteket: varje spel får sin ProtonDB-nivå och anti-fusk-status, och samma regler för beskedet gäller. Spel som inte har släppts än räknas som Pending. Steam visar bara en önskelista när Speldetaljer är offentliga.',
+        a: 'Öppna fliken Önskelista bredvid Antal spel och Speltimmar i ditt resultat. Den fungerar som kollen av biblioteket: varje spel får sin ProtonDB-nivå och anti-fusk-status, och samma regler för beskedet gäller. Spel som inte har släppts än räknas som Pending. Steam visar bara en önskelista när Speldetaljer är offentliga.',
       },
       group: {
         q: 'Hur fungerar kollen av en vängrupp?',
-        a: 'Lägg till upp till tre vänner, från din vänlista eller med profillänk. Vi läser varje bibliotek, hittar spelen ni alla äger och visar de som fungerar bra på Linux för alla, plus de som bara en av er saknar. Alla vänner behöver offentliga speldetaljer. Inget om gruppen sparas.',
+        a: 'Lägg till upp till tre vänner, från din vänlista eller med profillänk. Vi läser varje bibliotek, hittar spelen ni alla äger och visar de som fungerar bra på Linux för alla, plus de som bara en av er saknar. Fem eller fler spel som fungerar bra för alla betyder "Spelkvällen är räddad", ett till fyra är "Tunt urval" och inga alls är "Inte på Linux, inte än". Alla vänner behöver offentliga speldetaljer. Inget om gruppen sparas.',
       },
       hardware: {
         q: 'Räknas min hårdvara in?',

@@ -16,7 +16,9 @@ https://stillneedwindows.vercel.app. See README.md for the full picture.
 - `api/index.ts`: Vercel Function entry (Hono `handle`)
 - `server/`: Hono app, Steam / ProtonDB / anti-cheat clients, two-level cache (memory + Upstash)
 - `shared/`: types, input parsing, verdict maths, used by both sides
-- `src/`: Vue 3 app (Pinia store `stores/library.ts`, views, `locales/en.ts` + `sv.ts`)
+- `src/`: Vue 3 app (Pinia stores `stores/library.ts`, `wishlist.ts`, `group.ts`; views; `locales/en.ts` + `sv.ts`)
+  - `views/UserLayout.vue` holds the profile row and tabs; verdict and wishlist are its child routes
+  - `lib/compat.ts` batches `/api/compat` calls and reuses answers already fetched in the tab
 
 ## Conventions
 
@@ -31,9 +33,9 @@ https://stillneedwindows.vercel.app. See README.md for the full picture.
 
 ## Things that must stay true
 
-- **Verdict rules:** `shared/verdict.ts`, the How it works page and the README must agree.
+- **Verdict rules:** `shared/verdict.ts` (library, wishlist and group verdicts), the How it works page and the README must agree.
 - **No personal data stored:** profiles and game lists are never cached server-side or on the CDN.
-  Only per-game compatibility is cached.
+  Only per-game compatibility is cached. The same goes for wishlists and friends lists.
 - **Content Security Policy** (`vercel.json`): same-origin only, plus Steam avatar images. No inline
   scripts, no `data:` fonts, no third-party requests. If a change needs a new origin, update the
   policy deliberately.

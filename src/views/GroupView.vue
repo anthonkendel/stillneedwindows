@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { parseProfileInput } from '../../shared/profileInput'
 import { sourceLinks } from '../../shared/types'
-import { RUNS_WELL } from '../../shared/verdict'
+import { RUNS_WELL, groupVerdictFor } from '../../shared/verdict'
 import PageMain from '../components/PageMain.vue'
 import TierBadge from '../components/TierBadge.vue'
 import CheckingState from '../components/states/CheckingState.vue'
@@ -86,7 +86,7 @@ const blocked = computed(() => shared.value.filter((r) => isBlocking(r.compat?.a
 const unsure = computed(() => shared.value.length - playable.value.length - blocked.value.length)
 const nearMiss = computed(() => group.nearMissRows.filter((r) => inMode(r) && runsWell(r)).slice(0, 5))
 
-const verdict = computed(() => (playable.value.length >= 5 ? 'on' : playable.value.length > 0 ? 'few' : 'none'))
+const verdict = computed(() => groupVerdictFor(playable.value.length))
 
 const PAGE = 10
 const limit = ref(PAGE)
@@ -268,7 +268,7 @@ async function share() {
               {{ t(`group.verdicts.${verdict}.headline`) }}
             </h1>
             <p class="m-0 leading-normal text-muted">
-              {{ t(`group.verdicts.${verdict}.sub`, { blocked: blocked.length }, blocked.length) }}
+              {{ t(`group.verdicts.${verdict}.sub`) }}
             </p>
           </div>
           <p v-if="group.failed" class="m-0 text-[13px] text-danger" role="status">

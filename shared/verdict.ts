@@ -35,6 +35,20 @@ export function verdictFor(runsWell: number, borked: number): Exclude<VerdictKey
   return 'needed'
 }
 
+export type GroupVerdictKey = 'on' | 'few' | 'none'
+
+/**
+ * Group verdict (also shown on the How it works page), from the number of shared
+ * games that run well for everyone:
+ * - on:   5 or more
+ * - few:  1–4
+ * - none: 0
+ */
+export function groupVerdictFor(playable: number): GroupVerdictKey {
+  if (playable >= 5) return 'on'
+  return playable > 0 ? 'few' : 'none'
+}
+
 export function summarize(games: { tier: Tier; minutes: number }[], mode: Mode): Summary {
   const totals = new Map<Tier, number>(TIERS.map((t) => [t, 0]))
   for (const g of games) {
