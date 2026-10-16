@@ -55,6 +55,12 @@ export const router = createRouter({
       meta: { title: 'meta.games', description: 'meta.gamesDesc', index: false },
     },
     {
+      path: '/u/:query/wishlist/games',
+      name: 'wishlist-games',
+      component: () => import('./views/DeepDiveView.vue'),
+      meta: { title: 'meta.wishlistGames', description: 'meta.wishlistGamesDesc', index: false },
+    },
+    {
       path: '/u/:query/friends',
       name: 'friends',
       component: () => import('./views/FriendsView.vue'),

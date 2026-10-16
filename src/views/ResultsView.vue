@@ -8,6 +8,7 @@ import CompareFriendsCard from '../components/CompareFriendsCard.vue'
 import ExtLink from '../components/ExtLink.vue'
 import LibraryGate from '../components/LibraryGate.vue'
 import TierBadge from '../components/TierBadge.vue'
+import TierBreakdown from '../components/TierBreakdown.vue'
 import { TIER_META, antiCheatLabel, formatHours, formatNumber, isBlocking } from '../lib/tiers'
 import { useCountUp } from '../lib/useCountUp'
 import { useLibrary } from '../stores/library'
@@ -30,9 +31,13 @@ const pctLabel = computed(() =>
     : t('results.pctHours', { h: formatHours(totalMinutes.value) }),
 )
 
-const barSlices = computed(() => summary.value.slices.filter((x) => x.value > 0))
 const barLabel = computed(() =>
-  t('results.barLabel', { parts: barSlices.value.map((x) => `${TIER_META[x.tier].label} ${x.pct}%`).join(', ') }),
+  t('results.barLabel', {
+    parts: summary.value.slices
+      .filter((x) => x.value > 0)
+      .map((x) => `${TIER_META[x.tier].label} ${x.pct}%`)
+      .join(', '),
+  }),
 )
 
 const blockers = computed(() => lib.rows.filter((r) => r.tier === 'borked'))
@@ -83,34 +88,11 @@ async function share() {
       </Transition>
     </section>
 
-    <section class="flex flex-col gap-3.5">
-      <div class="anim-grow flex h-10 gap-0.5 overflow-hidden rounded-lg" role="img" :aria-label="barLabel">
-        <div
-          v-for="s in barSlices"
-          :key="s.tier"
-          class="transition-[flex-grow] duration-500 ease-out"
-          :style="{ flex: `${s.value} 1 0`, background: TIER_META[s.tier].color }"
-        />
-      </div>
-      <ul class="m-0 flex list-none flex-col p-0">
-        <li
-          v-for="(s, i) in summary.slices"
-          :key="s.tier"
-          class="anim-in flex items-center gap-3 border-b border-line py-3"
-          :style="{ '--i': i }"
-        >
-          <span
-            class="size-3 shrink-0 rounded-[3px]"
-            :style="{ background: TIER_META[s.tier].color }"
-            aria-hidden="true"
-          />
-          <span class="flex-1 font-semibold" lang="en">{{ TIER_META[s.tier].label }}</span>
-          <span class="font-mono text-[13px] text-faint">{{
-            mode === 'games' ? formatNumber(s.value) : formatHours(s.value)
-          }}</span>
-          <span class="w-12 text-right text-lg font-extrabold tabular-nums">{{ s.pct }}%</span>
-        </li>
-      </ul>
+    <TierBreakdown
+      :summary="summary"
+      :label="barLabel"
+      :format="(v) => (mode === 'games' ? formatNumber(v) : formatHours(v))"
+    >
       <p class="m-0 text-[13px] leading-relaxed text-faint">
         {{ t('results.runsWellNote') }}
         <span v-if="lib.failed" class="mt-1 block text-danger" role="status">
@@ -124,7 +106,7 @@ async function share() {
           </button>
         </span>
       </p>
-    </section>
+    </TierBreakdown>
 
     <CompareFriendsCard :query="lib.key" />
 

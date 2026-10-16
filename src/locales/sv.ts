@@ -25,6 +25,9 @@ const sv: typeof en = {
     group: 'Vad ni kan spela på Linux',
     groupDesc:
       'Spelen som en grupp Steam-vänner alla äger och som fungerar bra på Linux, och de som anti-fusk stoppar.',
+    wishlistGames: 'Alla spel på önskelistan per nivå',
+    wishlistGamesDesc:
+      'Alla spel på den här önskelistan på Steam med ProtonDB-nivå, Steam Deck-betyg och anti-fusk-status.',
   },
   nav: {
     home: 'stillneedwindows, startsida',
@@ -173,9 +176,10 @@ const sv: typeof en = {
     pct: 'av de {n} spelen på din önskelista fungerar bra på Linux',
     barLabel: 'Önskelistan per nivå: {parts}',
     note: 'Fungerar bra = Native, Platinum och Gold. Spel som inte har kommit ut än räknas som Pending.',
-    listTitle: 'Alla spel på din önskelista',
-    showLabel: 'Visa',
-    show: { all: 'Alla {n}', good: 'Fungerar bra', check: 'Kolla först' },
+    topTitle: 'Dina {n} senaste önskningar',
+    seeAll: 'Se alla spel på önskelistan per nivå',
+    gamesTitle: 'Alla spel på önskelistan, per nivå',
+    blockersTitle: 'Tänk efter innan du köper',
     comingSoon: 'Inte släppt än, så inga rapporter',
     notOut: 'Inte släppt',
     refundKicker: 'Innan du köper',
@@ -288,6 +292,7 @@ const sv: typeof en = {
     sortHours: 'Timmar',
     sortTier: 'Nivå',
     sortName: 'Namn',
+    sortAdded: 'Tillagd',
     filterLabel: 'Filtrera per nivå',
     all: 'Alla',
     deck: 'Steam Deck: {status}',

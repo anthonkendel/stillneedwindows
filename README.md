@@ -35,7 +35,7 @@ Compatibility data comes from [ProtonDB](https://www.protondb.com) and [Are We A
    - **Native Linux build**, **Steam Deck rating**, store **name**, **release state** and **multiplayer** categories from Steam's `IStoreBrowseService/GetItems`
    - **Anti-cheat status** from [Are We Anti-Cheat Yet](https://github.com/AreWeAntiCheatYet/AreWeAntiCheatYet)
 3. Each game's compatibility is cached for 24 h (6 h when ProtonDB has no reports) in Upstash Redis, or in memory without it. Responses are also CDN-cached for an hour.
-4. Pages: the verdict (`/u/:id`, with `?by=hours`) and the wishlist (`/u/:id/wishlist`) are tabs inside one layout (`UserLayout.vue`), so switching only swaps the content. The friend picker (`/u/:id/friends`) and group result (`/u/:id/group?with=…`) are separate pages, reached from the "Compare with friends" card.
+4. Pages: the verdict (`/u/:id`, with `?by=hours`) and the wishlist (`/u/:id/wishlist`) are tabs inside one layout (`UserLayout.vue`), so switching only swaps the content. Both tabs show the tier table and a top five, and link to the full list by tier with filters (`/u/:id/games`, `/u/:id/wishlist/games`, one shared page). The friend picker (`/u/:id/friends`) and group result (`/u/:id/group?with=…`) are separate pages, reached from the "Compare with friends" card.
 5. The verdict maths lives in `shared/verdict.ts`:
    - Native, Platinum and Gold count as "runs well"
    - Games whose anti-cheat blocks Linux count as Borked

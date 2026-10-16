@@ -166,6 +166,12 @@ describe('every screen renders in every language', () => {
       expect(wish).toContain('Future Game')
       expect(wish).toContain(t('wishlist.notOut'))
       expect(wish).toContain(t('compare.title'))
+      expect(wish).toContain(t('wishlist.seeAll'))
+
+      const wishGames = await visit(`/u/${STEAMID}/wishlist/games?tier=borked`)
+      expect(wishGames).toContain(t('wishlist.gamesTitle'))
+      expect(wishGames).toContain('Anti-cheat Shooter')
+      expect(wishGames).not.toContain('Gold Game')
 
       const picker = await visit(`/u/${STEAMID}/friends`)
       expect(picker).toContain('Buddy')
@@ -203,6 +209,7 @@ describe('every screen renders in every language', () => {
       `/u/${STEAMID}`,
       `/u/${STEAMID}/games`,
       `/u/${STEAMID}/wishlist`,
+      `/u/${STEAMID}/wishlist/games`,
       `/u/${STEAMID}/friends`,
       `/u/${STEAMID}/group?with=${FRIEND}`,
       `/u/${STEAMID}/group?with=private`,
