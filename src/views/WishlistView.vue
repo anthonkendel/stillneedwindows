@@ -129,9 +129,7 @@ async function share() {
 
       <div v-else key="done" class="flex flex-col gap-7">
         <ProfileRow :profile="wish.profile" :detail="t('wishlist.count', { n: formatNumber(counts.all) }, counts.all)">
-          <RouterLink to="/?check=wishlist" class="flex min-h-11 items-center text-sm">{{
-            t('results.newCheck')
-          }}</RouterLink>
+          <RouterLink to="/" class="flex min-h-11 items-center text-sm">{{ t('results.newCheck') }}</RouterLink>
         </ProfileRow>
 
         <section class="flex flex-col gap-3.5" aria-labelledby="verdict-heading">

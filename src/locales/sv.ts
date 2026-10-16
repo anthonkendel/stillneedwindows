@@ -50,30 +50,11 @@ const sv: typeof en = {
     backToResults: 'Tillbaka till mitt resultat',
   },
   search: {
-    checkLabel: 'Vad vill du kolla',
-    modes: {
-      library: {
-        tab: 'Bibliotek',
-        title: 'Behöver ditt Steam-bibliotek fortfarande Windows?',
-        lead: 'Klistra in din Steam-profil. Vi kollar varje spel du äger mot ProtonDB och ger dig en siffra.',
-        submit: 'Kolla mitt bibliotek',
-      },
-      wishlist: {
-        tab: 'Önskelista',
-        title: 'Fungerar din önskelista på Linux?',
-        lead: 'Kolla spelen du vill ha innan du köper dem. Samma ProtonDB-nivåer, samma anti-fusk-varningar.',
-        submit: 'Kolla min önskelista',
-      },
-      group: {
-        tab: 'Vängrupp',
-        title: 'Vad kan ni spela på Linux?',
-        lead: 'Börja med din profil och välj sedan upp till tre vänner. Vi hittar spelen ni alla äger som fungerar på Linux.',
-        submit: 'Visa mina vänner',
-      },
-    },
+    title: 'Behöver ditt Steam-bibliotek fortfarande Windows?',
+    lead: 'Klistra in din Steam-profil. Vi kollar varje spel du äger mot ProtonDB och ger dig en siffra.',
     label: 'Steam-användarnamn eller URL',
-    labelYou: 'Ditt Steam-användarnamn eller URL',
     placeholder: 'användarnamn eller steamcommunity.com/id/du',
+    submit: 'Kolla mitt bibliotek',
     help: 'Ingen inloggning. Din profil och speldetaljer måste vara offentliga.',
     howPublic: 'Så gör du dem offentliga',
     invalid: 'Det ser inte ut som en profillänk eller ett eget URL-namn. Ditt visningsnamn fungerar inte.',

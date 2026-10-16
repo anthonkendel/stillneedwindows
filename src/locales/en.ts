@@ -50,30 +50,11 @@ export default {
     backToResults: 'Back to my results',
   },
   search: {
-    checkLabel: 'What to check',
-    modes: {
-      library: {
-        tab: 'Library',
-        title: 'Does your Steam library still need Windows?',
-        lead: 'Paste your Steam profile. We check every game you own against ProtonDB and give you one number.',
-        submit: 'Check my library',
-      },
-      wishlist: {
-        tab: 'Wishlist',
-        title: 'Will your wishlist run on Linux?',
-        lead: 'Check the games you want before you buy them. Same ProtonDB tiers, same anti-cheat flags.',
-        submit: 'Check my wishlist',
-      },
-      group: {
-        tab: 'Friend group',
-        title: 'What can your group play on Linux?',
-        lead: 'Start with your profile, then pick up to three friends. We find the games you all own that run on Linux.',
-        submit: 'Show my friends',
-      },
-    },
+    title: 'Does your Steam library still need Windows?',
+    lead: 'Paste your Steam profile. We check every game you own against ProtonDB and give you one number.',
     label: 'Steam username or URL',
-    labelYou: 'Your Steam username or URL',
     placeholder: 'username or steamcommunity.com/id/you',
+    submit: 'Check my library',
     help: 'No login. Your profile and game details must be public.',
     howPublic: 'How to make them public',
     invalid: "That doesn't look like a profile link or custom URL name. Your display name won't work.",

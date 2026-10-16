@@ -148,7 +148,7 @@ describe('every screen renders in every language', () => {
       await setLocale(code)
       const t = i18n.global.t
 
-      expect(await visit('/')).toContain(t('search.modes.library.title'))
+      expect(await visit('/')).toContain(t('search.title'))
       expect(document.documentElement.lang).toBeTruthy()
       expect(document.title).toContain(t('meta.search'))
 
@@ -157,8 +157,6 @@ describe('every screen renders in every language', () => {
       expect(results).toContain(t('results.blockersTitle'))
       expect(results).toContain('BattlEye')
       expect(results).toContain(t('results.moreTitle'))
-
-      expect(await visit('/?check=wishlist')).toContain(t('search.modes.wishlist.title'))
 
       const wish = await visit(`/u/${STEAMID}/wishlist`)
       expect(wish).toContain(t('wishlistVerdicts.needed.headline'))
@@ -204,7 +202,6 @@ describe('every screen renders in every language', () => {
       `/u/${STEAMID}/friends`,
       `/u/${STEAMID}/group?with=${FRIEND}`,
       `/u/${STEAMID}/group?with=private`,
-      '/?check=group',
       '/how-it-works',
       '/privacy',
       '/u/private',
