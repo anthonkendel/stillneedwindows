@@ -43,6 +43,27 @@ const blockers = computed(() => lib.rows.filter((r) => r.tier === 'borked'))
 const topBlockers = computed(() => blockers.value.slice(0, 3))
 const top = computed(() => lib.rows.slice(0, 5))
 
+/** Other checks for the same profile. Paths are stroke icons drawn at 24×24. */
+const moreChecks = [
+  {
+    name: 'wishlist',
+    title: 'results.moreWishlist',
+    text: 'results.moreWishlistText',
+    icon: ['M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z'],
+  },
+  {
+    name: 'friends',
+    title: 'results.moreGroup',
+    text: 'results.moreGroupText',
+    icon: [
+      'M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
+      'M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6',
+      'M16 6.5a2.5 2.5 0 1 1 0 5',
+      'M17 14.5c2.3.6 4 2.8 4 5.5',
+    ],
+  },
+] as const
+
 const shareNote = ref('')
 async function share() {
   const url = `${location.origin}/u/${lib.profile?.steamid ?? ''}`
@@ -241,6 +262,49 @@ async function share() {
         </button>
         <p class="m-0 min-h-5 text-center text-sm text-muted" role="status">{{ shareNote }}</p>
       </div>
+
+      <section class="flex flex-col gap-2.5" aria-labelledby="more-heading">
+        <h2 id="more-heading" class="m-0 text-[19px] font-extrabold">{{ t('results.moreTitle') }}</h2>
+        <RouterLink
+          v-for="c in moreChecks"
+          :key="c.name"
+          :to="{ name: c.name, params: { query: lib.key } }"
+          class="card row-hover group flex min-h-18 items-center gap-3.5 px-4 py-3.5 text-ink no-underline hover:text-ink"
+        >
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="shrink-0 text-accent"
+            aria-hidden="true"
+          >
+            <path v-for="d in c.icon" :key="d" :d="d" />
+          </svg>
+          <span class="flex min-w-0 flex-1 flex-col gap-0.5">
+            <span class="text-base font-bold">{{ t(c.title) }}</span>
+            <span class="text-[13px] leading-snug text-faint">{{ t(c.text) }}</span>
+          </span>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="shrink-0 text-muted transition-transform duration-200 group-hover:translate-x-0.5"
+            aria-hidden="true"
+          >
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </RouterLink>
+      </section>
 
       <aside
         class="flex flex-col gap-2 border-t border-line pt-6 text-[13px] leading-relaxed text-faint"

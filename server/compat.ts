@@ -5,12 +5,28 @@ import { getCache } from './cache.js'
 import { getProtonTier } from './protondb.js'
 import { getStoreInfo, type StoreInfo } from './steam.js'
 
-const KEY = (appid: number) => `compat:v3:${appid}`
+// v4: added name, comingSoon and multiplayer
+const KEY = (appid: number) => `compat:v4:${appid}`
 export const TTL_KNOWN = 60 * 60 * 24 // tiers move slowly
 export const TTL_PENDING = 60 * 60 * 6 // look again sooner when there were no reports
 
 /** Requests in flight to ProtonDB per batch. Polite enough for a community site. */
 const PROTONDB_PARALLEL = 6
+
+/**
+ * ProtonDB lookups in flight in this instance. Group and wishlist checks often ask
+ * for the same popular games at the same moment; they share one upstream request.
+ */
+const inflight = new Map<number, Promise<ProtonTier | null>>()
+
+function protonTierOnce(appid: number): Promise<ProtonTier | null> {
+  let p = inflight.get(appid)
+  if (!p) {
+    p = getProtonTier(appid).finally(() => inflight.delete(appid))
+    inflight.set(appid, p)
+  }
+  return p
+}
 
 /** Compatibility for a batch of apps, served from cache where possible. */
 export async function getCompat(appids: number[]): Promise<GameCompat[]> {
@@ -30,7 +46,7 @@ export async function getCompat(appids: number[]): Promise<GameCompat[]> {
 
     const tiers = await mapLimit(missing, PROTONDB_PARALLEL, async (appid) => {
       try {
-        return { appid, tier: await getProtonTier(appid), ok: true }
+        return { appid, tier: await protonTierOnce(appid), ok: true }
       } catch {
         return { appid, tier: null as ProtonTier | null, ok: false }
       }
@@ -40,6 +56,9 @@ export async function getCompat(appids: number[]): Promise<GameCompat[]> {
       const info = store?.get(appid)
       const entry: GameCompat = {
         appid,
+        name: info?.name ?? null,
+        comingSoon: info?.comingSoon ?? false,
+        multiplayer: info?.multiplayer ?? null,
         native: info?.linux ?? false,
         deck: info?.deck ?? 'unknown',
         protonTier: tier,

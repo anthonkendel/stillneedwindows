@@ -1,12 +1,23 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { parseProfileInput } from '../../shared/profileInput'
 import PageMain from '../components/PageMain.vue'
 
-const { tm, rt } = useI18n()
+type Check = 'library' | 'wishlist' | 'group'
+const CHECKS: readonly Check[] = ['library', 'wishlist', 'group']
+const TARGET = { library: 'results', wishlist: 'wishlist', group: 'friends' } as const
+
+const { t, tm, rt } = useI18n()
+const route = useRoute()
 const router = useRouter()
+/** Kept in ?check= so the Results page and shared links can open a mode directly. */
+const check = computed<Check>(() =>
+  CHECKS.includes(route.query.check as Check) ? (route.query.check as Check) : 'library',
+)
+const setCheck = (c: Check) => router.replace({ query: c === 'library' ? {} : { check: c } })
+const prompt = computed(() => (check.value === 'library' ? '' : ` --${check.value}`))
 const input = ref('')
 const invalid = ref(false)
 const shake = ref(false)
@@ -19,7 +30,7 @@ function submit() {
     requestAnimationFrame(() => (shake.value = true))
     return
   }
-  router.push({ name: 'results', params: { query: q.value } })
+  router.push({ name: TARGET[check.value], params: { query: q.value } })
 }
 </script>
 
@@ -27,16 +38,38 @@ function submit() {
   <PageMain>
     <div class="flex flex-col gap-6 pt-4 sm:pt-12">
       <div class="anim-in font-mono text-[13px] text-accent" lang="en" aria-hidden="true">
-        $ windows --still-needed?<span class="caret">▍</span>
+        $ windows --still-needed?{{ prompt }}<span class="caret">▍</span>
       </div>
       <h1 class="anim-in m-0 text-[42px] leading-none font-black tracking-[-0.03em] sm:text-6xl" style="--i: 1">
-        {{ $t('search.title') }}
+        {{ t(`search.modes.${check}.title`) }}
       </h1>
-      <p class="anim-in m-0 text-[17px] leading-normal text-muted" style="--i: 2">{{ $t('search.lead') }}</p>
+      <p class="anim-in m-0 text-[17px] leading-normal text-muted" style="--i: 2">
+        {{ t(`search.modes.${check}.lead`) }}
+      </p>
+    </div>
+
+    <div
+      role="group"
+      :aria-label="t('search.checkLabel')"
+      class="anim-in -mb-2 grid grid-cols-3 rounded-xl border border-control bg-field p-1"
+      style="--i: 3"
+    >
+      <button
+        v-for="c in CHECKS"
+        :key="c"
+        type="button"
+        class="segment px-1"
+        :aria-pressed="check === c"
+        @click="setCheck(c)"
+      >
+        {{ t(`search.modes.${c}.tab`) }}
+      </button>
     </div>
 
     <form class="anim-in flex flex-col gap-2.5" style="--i: 3" novalidate @submit.prevent="submit">
-      <label for="profile" class="text-sm font-semibold text-ink-2">{{ $t('search.label') }}</label>
+      <label for="profile" class="text-sm font-semibold text-ink-2">{{
+        check === 'group' ? t('search.labelYou') : t('search.label')
+      }}</label>
       <input
         id="profile"
         v-model="input"
@@ -54,7 +87,7 @@ function submit() {
       />
       <p v-if="invalid" id="profile-error" class="m-0 text-sm text-danger" role="alert">{{ $t('search.invalid') }}</p>
       <button type="submit" class="btn btn-primary text-[17px]">
-        {{ $t('search.submit') }}
+        {{ t(`search.modes.${check}.submit`) }}
         <svg
           width="18"
           height="18"

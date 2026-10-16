@@ -36,6 +36,24 @@ export const router = createRouter({
       meta: { title: 'meta.games', description: 'meta.gamesDesc', index: false },
     },
     {
+      path: '/u/:query/wishlist',
+      name: 'wishlist',
+      component: () => import('./views/WishlistView.vue'),
+      meta: { title: 'meta.wishlist', description: 'meta.wishlistDesc', index: false },
+    },
+    {
+      path: '/u/:query/friends',
+      name: 'friends',
+      component: () => import('./views/FriendsView.vue'),
+      meta: { title: 'meta.friends', description: 'meta.friendsDesc', index: false },
+    },
+    {
+      path: '/u/:query/group',
+      name: 'group',
+      component: () => import('./views/GroupView.vue'),
+      meta: { title: 'meta.group', description: 'meta.groupDesc', index: false },
+    },
+    {
       path: '/how-it-works',
       name: 'how',
       component: () => import('./views/HowItWorksView.vue'),

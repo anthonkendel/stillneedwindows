@@ -8,6 +8,8 @@
 
 - **One verdict:** counted by number of games or by hours played, so the games you actually play weigh the most.
 - **Every game checked:** its ProtonDB tier (Native → Borked), Steam Deck rating and anti-cheat status, each linked to its source.
+- **Wishlist check:** see how much of your Steam wishlist runs on Linux before you buy, with unreleased games marked.
+- **Friend group check:** pick up to three friends (from your friends list or by profile link) and see the games you all own that run on Linux, the ones only one of you is missing, and the ones anti-cheat blocks.
 - **Blockers called out:** online games whose anti-cheat blocks Linux are flagged, so you know which games keep you on Windows and why.
 - **No login, no cookies, no tracking.** Profiles are never stored. See [the privacy page](https://stillneedwindows.vercel.app/privacy).
 - **English and Swedish**, mobile-first, WCAG 2.2 AA as the target.
@@ -25,9 +27,12 @@ Compatibility data comes from [ProtonDB](https://www.protondb.com) and [Are We A
 ## How it works
 
 1. `GET /api/profile/:query` resolves a profile URL, custom name or SteamID64 and returns the owned games (Steam Web API). Nothing is stored.
+   `GET /api/wishlist/:query` returns the app ids on a profile's wishlist (`IWishlistService/GetWishlist`), newest first.
+   `GET /api/friends/:query` returns the friends list (`ISteamUser/GetFriendList`) with names and avatars, fetched 100 per `GetPlayerSummaries` call. A private friends list (Steam answers 401) comes back as `private`.
+   The group check needs no endpoint of its own: the web app reads each member's library from `/api/profile`, works out the overlap in the browser and checks only the shared games plus the 40 most-played near misses.
 2. The web app sends the app ids in batches of 50 (three at a time, most-played first) to `GET /api/compat?ids=…`, which combines:
    - **ProtonDB** tier per game (trending tier, falling back to all-time)
-   - **Native Linux build** and **Steam Deck rating** from Steam's `IStoreBrowseService/GetItems`
+   - **Native Linux build**, **Steam Deck rating**, store **name**, **release state** and **multiplayer** categories from Steam's `IStoreBrowseService/GetItems`
    - **Anti-cheat status** from [Are We Anti-Cheat Yet](https://github.com/AreWeAntiCheatYet/AreWeAntiCheatYet)
 3. Each game's compatibility is cached for 24 h (6 h when ProtonDB has no reports) in Upstash Redis, or in memory without it. Responses are also CDN-cached for an hour.
 4. The verdict maths lives in `shared/verdict.ts`:
@@ -37,6 +42,7 @@ Compatibility data comes from [ProtonDB](https://www.protondb.com) and [Are We A
    - **Mostly ready:** 70%+ runs well and 10%+ is Borked
    - **Dual-boot territory:** 40–69% runs well
    - **You still need Windows:** under 40% runs well
+   - Wishlists use the same rules (with their own wording); games that aren't released yet count as Pending.
 
 ## Languages
 
@@ -76,7 +82,9 @@ Target: WCAG 2.2 AA.
 - **Writes:** each batch of 50 games is one `MSET` command, so a 600-game library costs about 12 Redis writes, not 600.
 - **HTTP caching:** compat responses are cached by browsers for 1 h and by the Vercel CDN for 24 h. Ids are sorted per batch so repeat checks hit the same URLs. Profiles are cached only in the visitor's own browser (5 min) and never on the CDN. Errors and private profiles are never cached.
 - **Assets:** hashed assets are cached for a year. Fonts are self-hosted variable fonts, with no Google Fonts requests.
-- **Upstreams:** at most 6 ProtonDB requests at a time per batch.
+- **Upstreams:** at most 6 ProtonDB requests at a time per batch. Concurrent lookups of the same game in one function instance share a single ProtonDB request.
+- **In the browser:** complete compat answers are kept for the life of the tab, so a wishlist or group check after a library check only asks for games it hasn't seen. A group check reuses the library already loaded in the tab instead of asking Steam again.
+- **Steam calls per check:** library 2–3, wishlist 2–3, friends list 2–3 plus one per 100 friends, group one library read per member. Wishlists, friends lists and libraries are never cached server-side; browsers keep them privately for 5 minutes.
 
 ## Security
 
@@ -86,7 +94,7 @@ Target: WCAG 2.2 AA.
   2. If _Request Path_ starts with `/api/`, then _Rate Limit_.
   3. Use a fixed window of 60 s, 60 requests, keyed by IP, with the default 429 action.
 
-  A 600-game library is about 13 requests, so real visitors never hit this.
+  A 600-game library is about 13 requests and a four-person group check about 10, so real visitors never hit this.
 
 - **Headers:**
   - A strict Content Security Policy: same-origin only, plus Steam avatar images.
