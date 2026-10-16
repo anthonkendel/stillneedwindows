@@ -180,6 +180,24 @@
   .segment:active:not(:disabled) {
     transform: scale(0.97);
   }
+  a.segment,
+  span.segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.25rem;
+    text-align: center;
+    line-height: 1.2;
+    text-decoration: none;
+  }
+  .segment[aria-current='page'] {
+    background: var(--color-ink);
+    color: var(--color-bg);
+  }
+  .segment[aria-disabled='true'] {
+    cursor: not-allowed;
+    color: var(--color-dim);
+  }
   .segment[aria-pressed='true'] {
     background: var(--color-ink);
     color: var(--color-bg);
@@ -233,7 +251,7 @@
     background: var(--color-raised);
     color: var(--color-ink);
   }
-  .segment:hover:not(:disabled):not([aria-pressed='true']) {
+  .segment:hover:not(:disabled):not([aria-pressed='true']):not([aria-current='page']):not([aria-disabled='true']) {
     background: var(--color-raised);
     color: var(--color-ink);
   }

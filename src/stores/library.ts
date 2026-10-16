@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 import { computed, ref, shallowRef } from 'vue'
 import type { GameCompat, OwnedGame, Profile, Tier } from '../../shared/types'
-import { chunk, mapLimit } from '../../shared/pool'
-import { fetchCompat, fetchProfile } from '../lib/api'
+import { fetchProfile } from '../lib/api'
+import { checkCompat, incomplete } from '../lib/compat'
 
 export type Phase = 'idle' | 'profile' | 'checking' | 'done' | 'private' | 'not_found' | 'empty' | 'error'
 
@@ -10,9 +10,6 @@ export interface Row extends OwnedGame {
   tier: Tier
   compat: GameCompat | undefined
 }
-
-const BATCH = 50
-const PARALLEL = 3
 
 export const useLibrary = defineStore('library', () => {
   const key = ref('')
@@ -32,25 +29,12 @@ export const useLibrary = defineStore('library', () => {
     }),
   )
 
-  async function checkBatch(ids: number[], id: number) {
-    let res
-    try {
-      res = await fetchCompat(ids)
-    } catch {
-      try {
-        res = await fetchCompat(ids) // one retry
-      } catch {
-        if (id === run) failed.value += ids.length
-      }
-    }
-    if (id !== run) return
-    if (res) {
-      const next = new Map(compat.value)
-      for (const g of res.games) next.set(g.appid, g)
-      compat.value = next
-      failed.value += res.games.filter((g) => !g.complete).length
-    }
-    checked.value += ids.length
+  function addBatch(answers: GameCompat[], covered: number) {
+    const next = new Map(compat.value)
+    for (const g of answers) next.set(g.appid, g)
+    compat.value = next
+    failed.value += incomplete(answers, covered)
+    checked.value += covered
   }
 
   /** Loads a profile and checks every game. Skips work already done for this query. */
@@ -86,13 +70,10 @@ export const useLibrary = defineStore('library', () => {
 
       phase.value = 'checking'
       // Games arrive sorted by playtime, so the ones that matter most come back first.
-      // Ids are sorted inside each batch so the same library always asks for the same
-      // URLs, which lets the browser and CDN caches answer repeat checks.
-      const batches = chunk(
+      await checkCompat(
         res.games.map((g) => g.appid),
-        BATCH,
-      ).map((ids) => ids.sort((a, b) => a - b))
-      await mapLimit(batches, PARALLEL, (ids) => checkBatch(ids, id))
+        (answers, covered) => id === run && addBatch(answers, covered),
+      )
       if (id === run) phase.value = 'done'
     } catch {
       if (id === run) phase.value = 'error'

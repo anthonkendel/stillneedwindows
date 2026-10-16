@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { parseProfileInput } from './profileInput.js'
-import { roundToHundred, summarize, verdictFor } from './verdict.js'
+import { groupVerdictFor, roundToHundred, summarize, verdictFor } from './verdict.js'
 import { effectiveTier, type Tier } from './types.js'
 
 describe('parseProfileInput', () => {
@@ -55,5 +55,11 @@ describe('verdict', () => {
     expect(byHours.borkedPct).toBe(90)
     expect(byHours.verdict).toBe('needed')
     expect(summarize([], 'games').verdict).toBe('empty')
+  })
+})
+
+describe('groupVerdictFor', () => {
+  it('needs five shared games for game night', () => {
+    expect([0, 1, 4, 5, 40].map(groupVerdictFor)).toEqual(['none', 'few', 'few', 'on', 'on'])
   })
 })

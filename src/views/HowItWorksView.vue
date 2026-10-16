@@ -9,7 +9,7 @@ import { homeRoute, lastUser } from '../lib/lastUser'
 const { t, tm, rt } = useI18n()
 
 const RULES = ['optional', 'mostly', 'dualboot', 'needed'] as const
-const FAQ = ['public', 'login', 'anticheat', 'pending', 'stores', 'data', 'hardware'] as const
+const FAQ = ['public', 'login', 'anticheat', 'pending', 'wishlist', 'group', 'stores', 'data', 'hardware'] as const
 const SOURCE_LIST = [
   { key: 'protondb', name: 'ProtonDB', href: SOURCES.protondb },
   { key: 'steamApi', name: 'Steam Web API', href: SOURCES.steamApi },

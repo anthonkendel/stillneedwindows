@@ -54,6 +54,12 @@ export type ProfileResponse =
 
 export interface GameCompat {
   appid: number
+  /** Store name. Wishlists don't include names, so they come from here. null if the store didn't say. */
+  name: string | null
+  /** Not released yet: no ProtonDB reports are expected. */
+  comingSoon: boolean
+  /** Has a multiplayer mode (online, LAN or split screen). null when the store didn't send categories. */
+  multiplayer: boolean | null
   /** The tier we count the game as. See effectiveTier(). */
   tier: Tier
   /** ProtonDB's tier, or null when ProtonDB has no reports. */
@@ -68,6 +74,31 @@ export interface GameCompat {
 export interface CompatResponse {
   games: GameCompat[]
 }
+
+export interface WishlistItem {
+  appid: number
+  /** When it was added, epoch seconds. 0 if unknown. */
+  added: number
+}
+
+/** Wishlists follow the Game details privacy setting, so a hidden one looks empty. */
+export type WishlistResponse =
+  | { status: 'ok'; profile: Profile; items: WishlistItem[] }
+  | { status: 'private'; profile: Profile }
+  | { status: 'not_found' }
+
+export interface Friend extends Profile {
+  /** Became friends, epoch seconds. 0 if unknown. */
+  since: number
+  /** False when the friend's profile is private, so their games can't be read. */
+  isPublic: boolean
+}
+
+export type FriendsResponse =
+  | { status: 'ok'; profile: Profile; friends: Friend[] }
+  /** The friends list is private (the profile itself may be public). */
+  | { status: 'private'; profile: Profile }
+  | { status: 'not_found' }
 
 /** Anti-cheat statuses that mean the game won't run online on Linux. */
 export const BLOCKING_ANTICHEAT: AntiCheatStatus[] = ['broken', 'denied']

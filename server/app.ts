@@ -1,11 +1,19 @@
 import { Hono, type MiddlewareHandler } from 'hono'
 import { secureHeaders } from 'hono/secure-headers'
 import { z } from 'zod'
-import type { CompatResponse, ProfileResponse } from '../shared/types.js'
+import type { CompatResponse, FriendsResponse, ProfileResponse, WishlistResponse } from '../shared/types.js'
 import { parseProfileInput } from '../shared/profileInput.js'
 import { getCompat } from './compat.js'
 import { UpstreamError } from './http.js'
-import { getOwnedGames, getPlayer, resolveVanity } from './steam.js'
+import {
+  getFriendList,
+  getOwnedGames,
+  getPlayer,
+  getPlayers,
+  getWishlist,
+  resolveVanity,
+  type Player,
+} from './steam.js'
 
 export const MAX_BATCH = 50
 
@@ -13,6 +21,17 @@ export const MAX_BATCH = 50
 const COMPAT_CACHE = 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800'
 /** A profile only in the visitor's own browser, briefly, so back/forward is instant. Never on the CDN. */
 const PROFILE_CACHE = 'private, max-age=300'
+
+/** Friends lists can run to a couple of thousand; that is 20 summary calls, so stop there. */
+export const MAX_FRIENDS = 2000
+
+/** Profile URL, custom name or SteamID64 → the player, or null when there's no such profile. */
+async function lookup(query: string): Promise<Player | null> {
+  const parsed = parseProfileInput(query)
+  if (!parsed) return null
+  const steamid = parsed.kind === 'steamid' ? parsed.value : await resolveVanity(parsed.value)
+  return steamid ? getPlayer(steamid) : null
+}
 
 /**
  * The API is only for this site. Browsers mark every request with Sec-Fetch-Site,
@@ -52,6 +71,8 @@ app.get('/health', (c) => {
 })
 
 app.use('/profile/*', sameOriginOnly)
+app.use('/wishlist/*', sameOriginOnly)
+app.use('/friends/*', sameOriginOnly)
 app.use('/compat', sameOriginOnly)
 
 /**
@@ -62,17 +83,11 @@ app.get('/profile/:query', async (c) => {
   // Failures and private profiles must not be cached: people fix them and retry.
   c.header('Cache-Control', 'no-store')
 
-  const parsed = parseProfileInput(c.req.param('query'))
-  if (!parsed) return c.json<ProfileResponse>({ status: 'not_found' })
-
-  const steamid = parsed.kind === 'steamid' ? parsed.value : await resolveVanity(parsed.value)
-  if (!steamid) return c.json<ProfileResponse>({ status: 'not_found' })
-
-  const player = await getPlayer(steamid)
+  const player = await lookup(c.req.param('query'))
   if (!player) return c.json<ProfileResponse>({ status: 'not_found' })
   if (!player.isPublic) return c.json<ProfileResponse>({ status: 'private', profile: player.profile })
 
-  const games = await getOwnedGames(steamid)
+  const games = await getOwnedGames(player.profile.steamid)
   if (games === null) return c.json<ProfileResponse>({ status: 'private', profile: player.profile })
 
   c.header('Cache-Control', PROFILE_CACHE)
@@ -82,6 +97,40 @@ app.get('/profile/:query', async (c) => {
     games: games.sort((a, b) => b.minutes - a.minutes),
     playtimeVisible: games.some((g) => g.minutes > 0),
   })
+})
+
+/**
+ * App ids on a profile's wishlist, newest first. Names and compatibility come from
+ * /api/compat like any other game. Never stored on our side.
+ */
+app.get('/wishlist/:query', async (c) => {
+  c.header('Cache-Control', 'no-store')
+  const player = await lookup(c.req.param('query'))
+  if (!player) return c.json<WishlistResponse>({ status: 'not_found' })
+  if (!player.isPublic) return c.json<WishlistResponse>({ status: 'private', profile: player.profile })
+
+  const items = await getWishlist(player.profile.steamid)
+  c.header('Cache-Control', PROFILE_CACHE)
+  return c.json<WishlistResponse>({ status: 'ok', profile: player.profile, items })
+})
+
+/** A profile's friends with names and avatars, sorted by name. Never stored on our side. */
+app.get('/friends/:query', async (c) => {
+  c.header('Cache-Control', 'no-store')
+  const player = await lookup(c.req.param('query'))
+  if (!player) return c.json<FriendsResponse>({ status: 'not_found' })
+  const list = player.isPublic ? await getFriendList(player.profile.steamid) : null
+  if (!list) return c.json<FriendsResponse>({ status: 'private', profile: player.profile })
+
+  const since = new Map(list.slice(0, MAX_FRIENDS).map((f) => [f.steamid, f.since]))
+  const players = await getPlayers([...since.keys()])
+  const friends = [...players.values()]
+    .filter((p) => since.has(p.profile.steamid))
+    .map((p) => ({ ...p.profile, since: since.get(p.profile.steamid) ?? 0, isPublic: p.isPublic }))
+    .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
+
+  c.header('Cache-Control', PROFILE_CACHE)
+  return c.json<FriendsResponse>({ status: 'ok', profile: player.profile, friends })
 })
 
 const CompatQuery = z.object({

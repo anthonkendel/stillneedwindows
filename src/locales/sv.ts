@@ -18,6 +18,16 @@ const sv: typeof en = {
     privacy: 'Integritet',
     privacyDesc:
       'Vad stillneedwindows gör med din Steam-profil: vad som läses, vad som sparas (nästan inget) och vilka andra som är inblandade.',
+    wishlist: 'Din önskelista på Linux',
+    wishlistDesc: 'Hur stor del av den här önskelistan på Steam som fungerar på Linux, spel för spel, innan du köper.',
+    friends: 'Välj vänner att jämföra med',
+    friendsDesc: 'Välj upp till tre Steam-vänner och hitta spelen ni alla äger som fungerar på Linux.',
+    group: 'Vad ni kan spela på Linux',
+    groupDesc:
+      'Spelen som en grupp Steam-vänner alla äger och som fungerar bra på Linux, och de som anti-fusk stoppar.',
+    wishlistGames: 'Alla spel på önskelistan per nivå',
+    wishlistGamesDesc:
+      'Alla spel på den här önskelistan på Steam med ProtonDB-nivå, Steam Deck-betyg och anti-fusk-status.',
   },
   nav: {
     home: 'stillneedwindows, startsida',
@@ -111,9 +121,10 @@ const sv: typeof en = {
   results: {
     newCheck: 'Ny koll',
     games: '{n} spel | {n} spel',
-    countBy: 'Räkna efter',
+    countBy: 'Visa resultat efter',
     byGames: 'Antal spel',
     byHours: 'Speltimmar',
+    byWishlist: 'Önskelista',
     hoursHidden:
       'Speltiden är dold på den här profilen. Bocka ur "Håll alltid min totala speltid privat" i Steam för att se den.',
     pctGames: 'av dina {n} spel fungerar bra på Linux',
@@ -153,6 +164,127 @@ const sv: typeof en = {
     },
     empty: { headline: 'Inget att räkna.', sub: 'Byt till att räkna antal spel i stället.' },
   },
+  compare: {
+    kicker: 'Spela tillsammans',
+    title: 'Jämför med vänner',
+    text: 'Välj upp till tre vänner och se vilka spel ni alla äger som fungerar på Linux, vilka ett köp skulle låsa upp och vilka som stoppas av anti-fusk.',
+    cta: 'Jämför med vänner',
+  },
+  wishlist: {
+    loading: 'Kollar din önskelista…',
+    count: '{n} spel på önskelistan | {n} spel på önskelistan',
+    pct: 'av de {n} spelen på din önskelista fungerar bra på Linux',
+    barLabel: 'Önskelistan per nivå: {parts}',
+    note: 'Fungerar bra = Native, Platinum och Gold. Spel som inte har kommit ut än räknas som Pending.',
+    topTitle: 'Dina {n} senaste önskningar',
+    seeAll: 'Se alla spel på önskelistan per nivå',
+    gamesTitle: 'Alla spel på önskelistan, per nivå',
+    blockersTitle: 'Tänk efter innan du köper',
+    comingSoon: 'Inte släppt än, så inga rapporter',
+    notOut: 'Inte släppt',
+    refundKicker: 'Innan du köper',
+    refundTitle: 'Silver, Bronze eller Pending? Testa inom återbetalningstiden.',
+    refundText:
+      'Steam betalar tillbaka spel som köpts de senaste 14 dagarna och spelats mindre än 2 timmar. Starta spelet på Linux först, och läs de senaste ProtonDB-rapporterna för vilka justeringar folk använder.',
+    share: 'Dela resultatet för min önskelista',
+    shareTitle: 'Fungerar min önskelista på Steam på Linux?',
+    shareText: '{pct} % av min önskelista på Steam fungerar bra på Linux. {verdict}',
+    toLibrary: 'Se beskedet för mitt bibliotek',
+    emptyTitle: 'Inget på önskelistan',
+    emptyLead:
+      'Antingen är önskelistan tom, eller så är den dold. Steam visar bara önskelistor när {term} är offentliga.',
+  },
+  wishlistVerdicts: {
+    optional: {
+      headline: 'Köp med gott samvete.',
+      sub: 'Nästan allt du vill ha fungerar på Linux. Kolla de få undantagen innan du betalar.',
+    },
+    mostly: {
+      headline: 'Mestadels tryggt att köpa.',
+      sub: 'Men {pct} % är borked, oftast på grund av anti-fusk. Hoppa över dem, eller behåll Windows för dem.',
+    },
+    dualboot: {
+      headline: 'Köp med försiktighet.',
+      sub: 'Bara en del fungerar bra. Kolla varje spel på ProtonDB innan du betalar.',
+    },
+    needed: { headline: 'Ingen Linux-önskelista.', sub: 'Det mesta du vill ha fungerar inte bra på Linux än.' },
+    empty: { headline: 'Inget att räkna.', sub: 'Lägg till några spel på din önskelista först.' },
+  },
+  friends: {
+    loading: 'Hämtar dina vänner…',
+    title: 'Vilka spelar du med?',
+    lead: 'Välj upp till tre vänner. Vi hittar spelen ni alla äger som fungerar på Linux för alla.',
+    you: 'Du',
+    privateTitle: 'Din vänlista är privat',
+    privateLead:
+      'Lägg till vänner med deras profillänk här nedanför, eller sätt {term} till Offentlig i Steams sekretessinställningar.',
+    friendsListTerm: 'Vänlista',
+    pickLabel: 'Välj upp till {n} vänner',
+    search: 'Sök bland din {n} vän | Sök bland dina {n} vänner',
+    none: 'Din vänlista är tom. Lägg till någon med deras profillänk här nedanför.',
+    searchPlaceholder: 'Namn',
+    noMatch: 'Inga vänner matchar det namnet.',
+    privateProfile: 'Privat profil, spelen är dolda',
+    since: 'Vänner sedan {year}',
+    manualLabel: 'Inte i listan? Lägg till med profillänk',
+    manualLabelOnly: 'Vännens användarnamn eller URL',
+    manualAdd: 'Lägg till profilen',
+    manualInvalid: 'Det ser inte ut som en profillänk eller ett eget URL-namn.',
+    manualDuplicate: 'Den profilen är redan med i gruppen.',
+    manualNotFound:
+      'Steam känner inte till någon profil med det namnet. Använd profillänken eller det egna URL-namnet.',
+    manualPrivate: '{name} har privata speldetaljer, så deras spel kan inte jämföras.',
+    pickedTitle: 'I gruppen',
+    pickedCount: '{n} av {max}',
+    pickedNone: 'Ingen vald än.',
+    remove: 'Ta bort {name}',
+    compare: 'Jämför {n} bibliotek | Jämför {n} bibliotek',
+    note: 'Vännerna behöver också offentliga speldetaljer. Inget sparas.',
+  },
+  group: {
+    loading: 'Jämför {n} bibliotek…',
+    blockedTitle: 'Vi kan inte se allas spel',
+    blockedLead:
+      'Några spellistor är privata, eller så hittades inte en profil. Fortsätt utan dem, eller be dem ändra en inställning.',
+    status: { loading: 'Hämtar', private: 'Privat', not_found: 'Hittades inte', error: 'Fel' },
+    continue: 'Fortsätt med {n} av er',
+    edit: 'Ändra gruppen',
+    howToTitle: 'Så gör man speldetaljer offentliga',
+    members: 'Grupp på {n}',
+    showLabel: 'Vilka gemensamma spel',
+    show: { multiplayer: 'Flerspelare', all: 'Alla gemensamma spel' },
+    count: {
+      multiplayer:
+        'flerspelarspel som ni alla äger fungerar bra på Linux | flerspelarspel som ni alla äger fungerar bra på Linux',
+      all: 'spel som ni alla äger fungerar bra på Linux | spel som ni alla äger fungerar bra på Linux',
+    },
+    verdicts: {
+      on: { headline: 'Spelkvällen är räddad.', sub: 'Gott om spel att välja på, och alla fungerar för er alla.' },
+      few: {
+        headline: 'Tunt urval.',
+        sub: 'Några spel fungerar för alla. Kolla de som nästan går: ett köp kan öppna för fler.',
+      },
+      none: {
+        headline: 'Inte på Linux, inte än.',
+        sub: 'Inget ni alla äger fungerar bra på Linux. Kolla de som nästan går, eller hela listan med gemensamma spel.',
+      },
+    },
+    sharedTitle: 'Alla äger de här',
+    multiplayer: 'Flerspelare',
+    nearTitle: 'Ett köp bort',
+    nearLead: 'Fungerar bra på Linux, och bara en av er saknar det.',
+    missing: '{name} äger det inte',
+    youMissing: 'Du äger det inte',
+    blockedListTitle: 'Stoppade för gruppen',
+    blockedListLead: 'Ni äger alla de här, men anti-fusk hindrar alla på Linux från att spela online.',
+    unsure:
+      '{n} gemensamt spel till är Silver, Bronze, Borked eller saknar rapporter. | {n} gemensamma spel till är Silver, Bronze, Borked eller saknar rapporter.',
+    share: 'Skicka till gruppen',
+    shareNote:
+      'Länken innehåller profilerna, inte resultatet. Den kollar på nytt varje gång den öppnas, och inget sparas.',
+    shareTitle: 'Vad kan vi spela på Linux?',
+    shareText: '{n} spel som vi alla äger fungerar bra på Linux.',
+  },
   games: {
     back: 'Besked',
     title: 'Alla spel, per nivå',
@@ -163,6 +295,7 @@ const sv: typeof en = {
     sortHours: 'Timmar',
     sortTier: 'Nivå',
     sortName: 'Namn',
+    sortAdded: 'Tillagd',
     filterLabel: 'Filtrera per nivå',
     all: 'Alla',
     deck: 'Steam Deck: {status}',
@@ -246,7 +379,15 @@ const sv: typeof en = {
       stores: { q: 'Kollas spel från Epic, GOG eller Xbox?', a: 'Nej, bara Steam. ProtonDB betygsätter Steam-spel.' },
       data: {
         q: 'Sparar ni min data?',
-        a: 'Inga profiler eller spellistor sparas. Vi cachar bara varje spels kompatibilitet i ett dygn så att kollarna går snabbt.',
+        a: 'Inga profiler, önskelistor, vänlistor eller spellistor sparas. Vi cachar bara varje spels kompatibilitet i ett dygn så att kollarna går snabbt.',
+      },
+      wishlist: {
+        q: 'Hur fungerar kollen av önskelistan?',
+        a: 'Öppna fliken Önskelista bredvid Antal spel och Speltimmar i ditt resultat. Den fungerar som kollen av biblioteket: varje spel får sin ProtonDB-nivå och anti-fusk-status, och samma regler för beskedet gäller. Spel som inte har släppts än räknas som Pending. Steam visar bara en önskelista när Speldetaljer är offentliga.',
+      },
+      group: {
+        q: 'Hur fungerar kollen av en vängrupp?',
+        a: 'Lägg till upp till tre vänner, från din vänlista eller med profillänk. Vi läser varje bibliotek, hittar spelen ni alla äger och visar de som fungerar bra på Linux för alla, plus de som bara en av er saknar. Fem eller fler spel som fungerar bra för alla betyder "Spelkvällen är räddad", ett till fyra är "Tunt urval" och inga alls är "Inte på Linux, inte än". Alla vänner behöver offentliga speldetaljer. Inget om gruppen sparas.',
       },
       hardware: {
         q: 'Räknas min hårdvara in?',
@@ -256,12 +397,12 @@ const sv: typeof en = {
   },
   privacy: {
     title: 'Integritet',
-    updated: 'Senast uppdaterad 15 oktober 2026',
+    updated: 'Senast uppdaterad 16 oktober 2026',
     lead: 'Kort sagt: inga konton, inga kakor, ingen spårning, och ditt Steam-bibliotek sparas aldrig.',
     sections: [
       {
         title: 'Vad vi läser',
-        body: 'När du kollar en profil hämtar vi profilens Steam-ID, visningsnamn, profilbild, ägda spel och speltid från Steams öppna API. Det är samma information som vem som helst kan se på en offentlig Steam-profil.',
+        body: 'När du kollar en profil hämtar vi profilens Steam-ID, visningsnamn, profilbild, ägda spel och speltid från Steams öppna API. Om du kollar en önskelista eller en vängrupp läser vi också önskelistan, vänlistan (varje väns Steam-ID, namn och profilbild) och de valda vännernas ägda spel. Det är samma information som vem som helst kan se på en offentlig Steam-profil.',
       },
       {
         title: 'Vad vi sparar',

@@ -2,21 +2,53 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { TIERS, sourceLinks, type Tier } from '../../shared/types'
+import { TIERS, sourceLinks, type GameCompat, type Tier } from '../../shared/types'
 import ExtLink from '../components/ExtLink.vue'
 import LibraryGate from '../components/LibraryGate.vue'
 import PageMain from '../components/PageMain.vue'
-import TierBadge from '../components/TierBadge.vue'
+import WishlistBadge from '../components/WishlistBadge.vue'
+import WishlistGate from '../components/WishlistGate.vue'
 import { TIER_META, antiCheatLabel, deckLabel, formatHours, formatNumber, isBlocking } from '../lib/tiers'
 import { useLibrary } from '../stores/library'
+import { useWishlist } from '../stores/wishlist'
 
 type Filter = Tier | 'all'
-type Sort = 'hours' | 'tier' | 'name'
+type Sort = 'hours' | 'added' | 'tier' | 'name'
+
+/** A library game (with playtime) or a wishlist game (newest first, no playtime). */
+interface DeepRow {
+  appid: number
+  name: string
+  tier: Tier
+  compat?: GameCompat
+  minutes?: number
+}
 
 const { t, locale } = useI18n()
 const lib = useLibrary()
+const wish = useWishlist()
 const route = useRoute()
 const router = useRouter()
+
+/** Every game by tier, for the library (/u/:id/games) or the wishlist (/u/:id/wishlist/games). */
+const isWishlist = computed(() => route.name === 'wishlist-games')
+const gate = computed(() => (isWishlist.value ? WishlistGate : LibraryGate))
+const rows = computed<DeepRow[]>(() => (isWishlist.value ? wish.rows : lib.rows))
+const back = computed(() =>
+  isWishlist.value
+    ? { to: { name: 'wishlist', params: { query: wish.key } }, label: t('results.byWishlist') }
+    : { to: { name: 'results', params: { query: lib.key } }, label: t('games.back') },
+)
+const subtitle = computed(() =>
+  t('games.subtitle', {
+    name: (isWishlist.value ? wish.profile : lib.profile)?.name,
+    count: isWishlist.value
+      ? t('wishlist.count', { n: formatNumber(rows.value.length) }, rows.value.length)
+      : t('results.games', { n: formatNumber(rows.value.length) }, rows.value.length),
+  }),
+)
+/** The order each list arrives in: most played first, or most recently wishlisted first. */
+const sortOptions = computed<Sort[]>(() => [isWishlist.value ? 'added' : 'hours', 'tier', 'name'])
 
 const filter = computed<Filter>(() => {
   const q = route.query.tier
@@ -26,7 +58,7 @@ const filter = computed<Filter>(() => {
 const PAGE = 100
 const limit = ref(PAGE)
 const search = ref('')
-const sort = ref<Sort>('hours')
+const sort = ref<Sort>(sortOptions.value[0]!)
 
 function setFilter(f: Filter) {
   limit.value = PAGE
@@ -34,32 +66,34 @@ function setFilter(f: Filter) {
 }
 
 const counts = computed(() => {
-  const c = new Map<Filter, number>([['all', lib.rows.length]])
+  const c = new Map<Filter, number>([['all', rows.value.length]])
   for (const tier of TIERS) c.set(tier, 0)
-  for (const r of lib.rows) c.set(r.tier, c.get(r.tier)! + 1)
+  for (const r of rows.value) c.set(r.tier, c.get(r.tier)! + 1)
   return c
 })
 const chips = computed(() => (['all', ...TIERS] as Filter[]).filter((f) => f === 'all' || counts.value.get(f)))
 
 const visible = computed(() => {
   const q = search.value.trim().toLocaleLowerCase(locale.value)
-  const rows = lib.rows.filter(
+  const list = rows.value.filter(
     (r) =>
       (filter.value === 'all' || r.tier === filter.value) && (!q || r.name.toLocaleLowerCase(locale.value).includes(q)),
   )
-  if (sort.value === 'name') return [...rows].sort((a, b) => a.name.localeCompare(b.name, locale.value))
+  if (sort.value === 'name') return [...list].sort((a, b) => a.name.localeCompare(b.name, locale.value))
   if (sort.value === 'tier')
-    return [...rows].sort((a, b) => TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || b.minutes - a.minutes)
-  return rows // already by playtime
+    return [...list].sort(
+      (a, b) => TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || (b.minutes ?? 0) - (a.minutes ?? 0),
+    )
+  return list // already by playtime, or newest first on a wishlist
 })
 const shown = computed(() => visible.value.slice(0, limit.value))
 </script>
 
 <template>
   <PageMain>
-    <LibraryGate>
+    <component :is="gate">
       <RouterLink
-        :to="{ name: 'results', params: { query: lib.key } }"
+        :to="back.to"
         class="group -mb-2 flex min-h-11 w-fit items-center gap-1.5 text-[15px] font-semibold no-underline"
       >
         <svg
@@ -76,19 +110,14 @@ const shown = computed(() => visible.value.slice(0, limit.value))
         >
           <path d="M15 18l-6-6 6-6" />
         </svg>
-        {{ t('games.back') }}
+        {{ back.label }}
       </RouterLink>
 
       <div class="flex flex-col gap-1.5">
-        <h1 class="m-0 text-[32px] font-black tracking-tight">{{ t('games.title') }}</h1>
-        <p class="m-0 text-sm text-faint">
-          {{
-            t('games.subtitle', {
-              name: lib.profile?.name,
-              count: t('results.games', { n: formatNumber(lib.rows.length) }, lib.rows.length),
-            })
-          }}
-        </p>
+        <h1 class="m-0 text-[32px] font-black tracking-tight">
+          {{ isWishlist ? t('wishlist.gamesTitle') : t('games.title') }}
+        </h1>
+        <p class="m-0 text-sm text-faint">{{ subtitle }}</p>
       </div>
 
       <div class="flex gap-2.5">
@@ -106,9 +135,9 @@ const shown = computed(() => visible.value.slice(0, limit.value))
         <div class="flex shrink-0 flex-col gap-1.5">
           <label for="sort" class="text-[13px] font-semibold text-muted">{{ t('games.sort') }}</label>
           <select id="sort" v-model="sort" class="field min-h-12 w-auto cursor-pointer px-2.5">
-            <option value="hours">{{ t('games.sortHours') }}</option>
-            <option value="tier">{{ t('games.sortTier') }}</option>
-            <option value="name">{{ t('games.sortName') }}</option>
+            <option v-for="o in sortOptions" :key="o" :value="o">
+              {{ t(`games.sort${o[0]!.toUpperCase()}${o.slice(1)}`) }}
+            </option>
           </select>
         </div>
       </div>
@@ -149,11 +178,12 @@ const shown = computed(() => visible.value.slice(0, limit.value))
         >
           <div class="flex items-center justify-between gap-3">
             <h2 class="m-0 min-w-0 text-base font-bold">{{ r.name }}</h2>
-            <TierBadge :tier="r.tier" />
+            <WishlistBadge :row="r" />
           </div>
           <div class="flex flex-wrap gap-x-4 gap-y-1.5 text-[13px] text-muted">
-            <span class="font-mono text-ink-2">{{ formatHours(r.minutes) }}</span>
-            <span>{{ t('games.deck', { status: deckLabel(r.compat?.deck ?? 'unknown') }) }}</span>
+            <span v-if="r.minutes !== undefined" class="font-mono text-ink-2">{{ formatHours(r.minutes) }}</span>
+            <span v-if="r.compat?.comingSoon">{{ t('wishlist.comingSoon') }}</span>
+            <span v-else>{{ t('games.deck', { status: deckLabel(r.compat?.deck ?? 'unknown') }) }}</span>
             <span v-if="r.compat?.antiCheat" :class="isBlocking(r.compat.antiCheat) ? 'font-semibold text-danger' : ''">
               {{ antiCheatLabel(r.compat.antiCheat) }}
             </span>
@@ -181,7 +211,7 @@ const shown = computed(() => visible.value.slice(0, limit.value))
       <p v-if="!visible.length" class="anim-in m-0 py-8 text-center text-faint">{{ t('games.noMatch') }}</p>
 
       <p class="m-0 text-xs leading-relaxed text-dim">{{ t('games.note') }}</p>
-    </LibraryGate>
+    </component>
   </PageMain>
 </template>
 
