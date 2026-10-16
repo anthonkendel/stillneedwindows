@@ -253,6 +253,18 @@ describe('every screen renders in every language', () => {
     expect(wrapper.text()).toContain(i18n.global.t('common.backToResults'))
   })
 
+  it('keeps the profile row and tabs in place when switching to the wishlist tab', async () => {
+    await setLocale('en')
+    await visit(`/u/${STEAMID}`)
+    const tabs = wrapper.find(`nav[aria-label="${i18n.global.t('results.countBy')}"]`).element
+    expect(wrapper.findAll(`nav[aria-label="${i18n.global.t('results.countBy')}"]`)).toHaveLength(1)
+    await visit(`/u/${STEAMID}/wishlist`)
+    const after = wrapper.findAll(`nav[aria-label="${i18n.global.t('results.countBy')}"]`)
+    expect(after).toHaveLength(1)
+    expect(after[0]!.element).toBe(tabs) // same node: the frame was not rebuilt
+    expect(wrapper.find('a[aria-current="page"]').text()).toBe(i18n.global.t('results.byWishlist'))
+  })
+
   it('canonicalises a custom name to the SteamID64', async () => {
     await visit('/u/somename')
     expect(router.currentRoute.value.params.query).toBe(STEAMID)

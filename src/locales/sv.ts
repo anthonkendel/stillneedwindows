@@ -118,7 +118,7 @@ const sv: typeof en = {
   results: {
     newCheck: 'Ny koll',
     games: '{n} spel | {n} spel',
-    countBy: 'Räkna efter',
+    countBy: 'Visa resultat efter',
     byGames: 'Antal spel',
     byHours: 'Speltimmar',
     byWishlist: 'Önskelista',

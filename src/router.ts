@@ -1,5 +1,5 @@
 import { nextTick, watch } from 'vue'
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, type RouteLocationNormalized } from 'vue-router'
 import { i18n } from './i18n'
 import { applyHead } from './lib/head'
 import SearchView from './views/SearchView.vue'
@@ -14,6 +14,11 @@ declare module 'vue-router' {
   }
 }
 
+/** Both routes render inside the same layout for the same profile, e.g. verdict ⇄ wishlist tabs. */
+function sameFrame(to: RouteLocationNormalized, from: RouteLocationNormalized) {
+  return to.matched.length > 1 && to.matched[0] === from.matched[0] && to.params.query === from.params.query
+}
+
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -24,22 +29,30 @@ export const router = createRouter({
       meta: { title: 'meta.search', description: 'meta.searchDesc', index: true },
     },
     {
+      // The verdict and the wishlist share a frame (profile row + tabs), so switching
+      // between them swaps only the content.
       path: '/u/:query',
-      name: 'results',
-      component: () => import('./views/ResultsView.vue'),
-      meta: { title: 'meta.results', description: 'meta.resultsDesc', index: false },
+      component: () => import('./views/UserLayout.vue'),
+      children: [
+        {
+          path: '',
+          name: 'results',
+          component: () => import('./views/ResultsView.vue'),
+          meta: { title: 'meta.results', description: 'meta.resultsDesc', index: false },
+        },
+        {
+          path: 'wishlist',
+          name: 'wishlist',
+          component: () => import('./views/WishlistView.vue'),
+          meta: { title: 'meta.wishlist', description: 'meta.wishlistDesc', index: false },
+        },
+      ],
     },
     {
       path: '/u/:query/games',
       name: 'games',
       component: () => import('./views/DeepDiveView.vue'),
       meta: { title: 'meta.games', description: 'meta.gamesDesc', index: false },
-    },
-    {
-      path: '/u/:query/wishlist',
-      name: 'wishlist',
-      component: () => import('./views/WishlistView.vue'),
-      meta: { title: 'meta.wishlist', description: 'meta.wishlistDesc', index: false },
     },
     {
       path: '/u/:query/friends',
@@ -75,6 +88,8 @@ export const router = createRouter({
   scrollBehavior(to, from, saved) {
     if (saved) return saved
     if (to.hash) return { el: to.hash, top: 16 }
+    // Switching tabs within the same frame (verdict ⇄ wishlist): stay put.
+    if (sameFrame(to, from)) return false
     // Only the query changed (e.g. a tier filter): stay put.
     if (to.path === from.path) return false
     return { top: 0 }
@@ -93,6 +108,6 @@ router.afterEach((to, from) => {
     first = false
     return
   }
-  if (to.path === from.path) return
+  if (to.path === from.path || sameFrame(to, from)) return
   nextTick(() => document.getElementById('main')?.focus({ preventScroll: true }))
 })

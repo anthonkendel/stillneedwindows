@@ -5,14 +5,25 @@ import type { Profile } from '../../../shared/types'
 import ProfileRow from '../ProfileRow.vue'
 
 /** Progress while a wishlist or group is checked. The library has its own, richer LoadingState. */
-const props = defineProps<{ profile: Profile | null; title: string; done: number; total: number }>()
+const props = defineProps<{
+  profile: Profile | null
+  title: string
+  done: number
+  total: number
+  /** The page above already shows the profile row. */
+  bare?: boolean
+}>()
 const { t } = useI18n()
 const pct = computed(() => (props.total ? Math.round((props.done / props.total) * 100) : 0))
 </script>
 
 <template>
   <div class="flex flex-col gap-7" aria-busy="true">
-    <ProfileRow :profile="profile" :detail="profile ? t('loading.profileFound') : t('loading.findingProfile')" />
+    <ProfileRow
+      v-if="!bare"
+      :profile="profile"
+      :detail="profile ? t('loading.profileFound') : t('loading.findingProfile')"
+    />
     <div class="flex flex-col gap-3.5">
       <h1 class="m-0 text-[34px] leading-tight font-black tracking-tight">{{ title }}</h1>
       <div

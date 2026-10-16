@@ -118,9 +118,9 @@ export default {
   results: {
     newCheck: 'New check',
     games: '{n} game | {n} games',
-    countBy: 'Count by',
-    byGames: 'By games',
-    byHours: 'By hours played',
+    countBy: 'Show results by',
+    byGames: 'Games',
+    byHours: 'Hours played',
     byWishlist: 'Wishlist',
     hoursHidden:
       'Hours are hidden on this profile. Untick "Always keep my total playtime private" on Steam to unlock them.',

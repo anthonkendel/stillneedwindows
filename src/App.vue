@@ -14,7 +14,7 @@ import AppHeader from './components/AppHeader.vue'
     <AppHeader />
     <RouterView v-slot="{ Component, route }">
       <Transition name="page" mode="out-in">
-        <component :is="Component" :key="route.name" />
+        <component :is="Component" :key="route.matched[0]?.path ?? route.path" />
       </Transition>
     </RouterView>
     <AppFooter />
