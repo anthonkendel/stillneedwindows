@@ -121,6 +121,7 @@ export default {
     countBy: 'Count by',
     byGames: 'By games',
     byHours: 'By hours played',
+    byWishlist: 'Wishlist',
     hoursHidden:
       'Hours are hidden on this profile. Untick "Always keep my total playtime private" on Steam to unlock them.',
     pctGames: 'of your {n} games run well on Linux',
@@ -146,11 +147,6 @@ export default {
       'Tiers come from {protondb} reports, native builds and Deck ratings from the {steam}, anti-cheat status from {awacy}. {how}',
     sourcesHow: 'How the verdict works',
     steamStore: 'Steam store',
-    moreTitle: 'Check more with this profile',
-    moreWishlist: 'Your wishlist',
-    moreWishlistText: 'Will the games you want run before you buy?',
-    moreGroup: 'You and your friends',
-    moreGroupText: 'Find the games you all own that run on Linux.',
   },
   verdicts: {
     optional: {
@@ -167,6 +163,12 @@ export default {
       sub: "Too much of your library doesn't run yet. Check back in a year.",
     },
     empty: { headline: 'Nothing to count.', sub: 'Switch to counting by games instead.' },
+  },
+  compare: {
+    kicker: 'Play together',
+    title: 'Compare with friends',
+    text: 'Pick up to three friends and see which games you all own run on Linux, which one purchase would unlock, and which ones anti-cheat blocks.',
+    cta: 'Compare with friends',
   },
   wishlist: {
     loading: 'Checking your wishlist…',

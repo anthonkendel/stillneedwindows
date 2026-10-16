@@ -1,26 +1,25 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 import { SOURCES, sourceLinks } from '../../shared/types'
 import { summarize, type Mode } from '../../shared/verdict'
+import CompareFriendsCard from '../components/CompareFriendsCard.vue'
 import ExtLink from '../components/ExtLink.vue'
 import LibraryGate from '../components/LibraryGate.vue'
 import PageMain from '../components/PageMain.vue'
 import ProfileRow from '../components/ProfileRow.vue'
 import TierBadge from '../components/TierBadge.vue'
+import ViewTabs from '../components/ViewTabs.vue'
 import { TIER_META, antiCheatLabel, formatHours, formatNumber, isBlocking } from '../lib/tiers'
 import { useCountUp } from '../lib/useCountUp'
 import { useLibrary } from '../stores/library'
 
 const { t } = useI18n()
 const lib = useLibrary()
-const mode = ref<Mode>('games')
-watch(
-  () => lib.playtimeVisible,
-  (visible) => {
-    if (!visible) mode.value = 'games'
-  },
-)
+const route = useRoute()
+/** ?by=hours, unless the profile hides playtime. */
+const mode = computed<Mode>(() => (route.query.by === 'hours' && lib.playtimeVisible ? 'hours' : 'games'))
 
 const summary = computed(() => summarize(lib.rows, mode.value))
 const pct = computed(() => summary.value.runsWellPct)
@@ -42,27 +41,6 @@ const barLabel = computed(() =>
 const blockers = computed(() => lib.rows.filter((r) => r.tier === 'borked'))
 const topBlockers = computed(() => blockers.value.slice(0, 3))
 const top = computed(() => lib.rows.slice(0, 5))
-
-/** Other checks for the same profile. Paths are stroke icons drawn at 24×24. */
-const moreChecks = [
-  {
-    name: 'wishlist',
-    title: 'results.moreWishlist',
-    text: 'results.moreWishlistText',
-    icon: ['M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z'],
-  },
-  {
-    name: 'friends',
-    title: 'results.moreGroup',
-    text: 'results.moreGroupText',
-    icon: [
-      'M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z',
-      'M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6',
-      'M16 6.5a2.5 2.5 0 1 1 0 5',
-      'M17 14.5c2.3.6 4 2.8 4 5.5',
-    ],
-  },
-] as const
 
 const shareNote = ref('')
 async function share() {
@@ -93,24 +71,7 @@ async function share() {
       </ProfileRow>
 
       <div class="flex flex-col gap-2">
-        <div
-          role="group"
-          :aria-label="t('results.countBy')"
-          class="grid grid-cols-2 rounded-xl border border-control bg-field p-1"
-        >
-          <button
-            v-for="m in ['games', 'hours'] as const"
-            :key="m"
-            type="button"
-            class="segment"
-            :aria-pressed="mode === m"
-            :disabled="m === 'hours' && !lib.playtimeVisible"
-            :aria-describedby="m === 'hours' && !lib.playtimeVisible ? 'hours-hidden' : undefined"
-            @click="mode = m"
-          >
-            {{ m === 'games' ? t('results.byGames') : t('results.byHours') }}
-          </button>
-        </div>
+        <ViewTabs :query="lib.key" :current="mode" :hours-disabled="!lib.playtimeVisible" />
         <p v-if="!lib.playtimeVisible" id="hours-hidden" class="m-0 text-[13px] leading-normal text-faint">
           {{ t('results.hoursHidden') }}
         </p>
@@ -182,6 +143,8 @@ async function share() {
           </span>
         </p>
       </section>
+
+      <CompareFriendsCard :query="lib.key" />
 
       <section v-if="blockers.length" class="card flex flex-col gap-3 p-5" aria-labelledby="blockers-heading">
         <div class="flex items-baseline justify-between gap-3">
@@ -262,49 +225,6 @@ async function share() {
         </button>
         <p class="m-0 min-h-5 text-center text-sm text-muted" role="status">{{ shareNote }}</p>
       </div>
-
-      <section class="flex flex-col gap-2.5" aria-labelledby="more-heading">
-        <h2 id="more-heading" class="m-0 text-[19px] font-extrabold">{{ t('results.moreTitle') }}</h2>
-        <RouterLink
-          v-for="c in moreChecks"
-          :key="c.name"
-          :to="{ name: c.name, params: { query: lib.key } }"
-          class="card row-hover group flex min-h-18 items-center gap-3.5 px-4 py-3.5 text-ink no-underline hover:text-ink"
-        >
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="shrink-0 text-accent"
-            aria-hidden="true"
-          >
-            <path v-for="d in c.icon" :key="d" :d="d" />
-          </svg>
-          <span class="flex min-w-0 flex-1 flex-col gap-0.5">
-            <span class="text-base font-bold">{{ t(c.title) }}</span>
-            <span class="text-[13px] leading-snug text-faint">{{ t(c.text) }}</span>
-          </span>
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="shrink-0 text-muted transition-transform duration-200 group-hover:translate-x-0.5"
-            aria-hidden="true"
-          >
-            <path d="M9 6l6 6-6 6" />
-          </svg>
-        </RouterLink>
-      </section>
 
       <aside
         class="flex flex-col gap-2 border-t border-line pt-6 text-[13px] leading-relaxed text-faint"

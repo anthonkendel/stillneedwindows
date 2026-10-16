@@ -156,12 +156,16 @@ describe('every screen renders in every language', () => {
       expect(results).toContain('Tester')
       expect(results).toContain(t('results.blockersTitle'))
       expect(results).toContain('BattlEye')
-      expect(results).toContain(t('results.moreTitle'))
+      expect(results).toContain(t('compare.title'))
+      expect(results).toContain(t('results.byWishlist'))
+      expect(await visit(`/u/${STEAMID}?by=hours`)).toContain(t('results.verdictKicker'))
+      expect(wrapper.find('a[aria-current="page"][href$="by=hours"]').exists()).toBe(true)
 
       const wish = await visit(`/u/${STEAMID}/wishlist`)
       expect(wish).toContain(t('wishlistVerdicts.needed.headline'))
       expect(wish).toContain('Future Game')
       expect(wish).toContain(t('wishlist.notOut'))
+      expect(wish).toContain(t('compare.title'))
 
       const picker = await visit(`/u/${STEAMID}/friends`)
       expect(picker).toContain('Buddy')

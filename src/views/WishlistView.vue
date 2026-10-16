@@ -7,6 +7,8 @@ import { RUNS_WELL, summarize } from '../../shared/verdict'
 import PageMain from '../components/PageMain.vue'
 import ProfileRow from '../components/ProfileRow.vue'
 import TierBadge from '../components/TierBadge.vue'
+import CompareFriendsCard from '../components/CompareFriendsCard.vue'
+import ViewTabs from '../components/ViewTabs.vue'
 import CheckingState from '../components/states/CheckingState.vue'
 import ErrorState from '../components/states/ErrorState.vue'
 import NotFoundState from '../components/states/NotFoundState.vue'
@@ -14,6 +16,7 @@ import PrivateState from '../components/states/PrivateState.vue'
 import StateIcon from '../components/states/StateIcon.vue'
 import { TIER_META, antiCheatLabel, deckLabel, formatNumber, isBlocking } from '../lib/tiers'
 import { useCountUp } from '../lib/useCountUp'
+import { useLibrary } from '../stores/library'
 import { useWishlist, type WishRow } from '../stores/wishlist'
 
 type Show = 'all' | 'good' | 'check'
@@ -34,6 +37,10 @@ watch(
     router.replace({ name: 'wishlist', params: { query: steamid } })
   },
 )
+
+/** Hours are only known once the library has been read in this tab; until then the tab stays on. */
+const lib = useLibrary()
+const hoursHidden = computed(() => lib.profile?.steamid === wish.profile?.steamid && !lib.playtimeVisible)
 
 const loading = computed(() => ['idle', 'profile', 'checking'].includes(wish.phase))
 const retry = () => wish.load(query.value, true)
@@ -110,6 +117,7 @@ async function share() {
 
       <div v-else-if="wish.phase === 'empty'" key="empty" class="flex flex-col gap-6">
         <ProfileRow :profile="wish.profile" :detail="t('wishlist.count', { n: 0 }, 0)" />
+        <ViewTabs :query="query" current="wishlist" :hours-disabled="hoursHidden" />
         <StateIcon kind="search" />
         <div class="anim-in flex flex-col gap-2.5" style="--i: 1">
           <h1 class="m-0 text-[34px] leading-tight font-black tracking-tight">{{ t('wishlist.emptyTitle') }}</h1>
@@ -131,6 +139,7 @@ async function share() {
         <ProfileRow :profile="wish.profile" :detail="t('wishlist.count', { n: formatNumber(counts.all) }, counts.all)">
           <RouterLink to="/" class="flex min-h-11 items-center text-sm">{{ t('results.newCheck') }}</RouterLink>
         </ProfileRow>
+        <ViewTabs :query="query" current="wishlist" :hours-disabled="hoursHidden" />
 
         <section class="flex flex-col gap-3.5" aria-labelledby="verdict-heading">
           <p class="m-0 flex flex-col gap-3.5">
@@ -243,12 +252,11 @@ async function share() {
         </section>
 
         <div class="flex flex-col gap-2.5">
-          <button type="button" class="btn btn-primary" @click="share">{{ t('wishlist.share') }}</button>
-          <RouterLink :to="{ name: 'results', params: { query } }" class="btn btn-secondary">{{
-            t('wishlist.toLibrary')
-          }}</RouterLink>
+          <button type="button" class="btn btn-secondary" @click="share">{{ t('wishlist.share') }}</button>
           <p class="m-0 min-h-5 text-center text-sm text-muted" role="status">{{ shareNote }}</p>
         </div>
+
+        <CompareFriendsCard :query="query" />
       </div>
     </Transition>
   </PageMain>

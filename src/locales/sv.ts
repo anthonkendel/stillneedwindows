@@ -121,6 +121,7 @@ const sv: typeof en = {
     countBy: 'Räkna efter',
     byGames: 'Antal spel',
     byHours: 'Speltimmar',
+    byWishlist: 'Önskelista',
     hoursHidden:
       'Speltiden är dold på den här profilen. Bocka ur "Håll alltid min totala speltid privat" i Steam för att se den.',
     pctGames: 'av dina {n} spel fungerar bra på Linux',
@@ -146,11 +147,6 @@ const sv: typeof en = {
       'Nivåerna kommer från rapporter på {protondb}, native-versioner och Deck-betyg från {steam}, anti-fusk-status från {awacy}. {how}',
     sourcesHow: 'Så räknas beskedet',
     steamStore: 'Steam-butiken',
-    moreTitle: 'Kolla mer med den här profilen',
-    moreWishlist: 'Din önskelista',
-    moreWishlistText: 'Fungerar spelen du vill ha, innan du köper dem?',
-    moreGroup: 'Du och dina vänner',
-    moreGroupText: 'Hitta spelen ni alla äger som fungerar på Linux.',
   },
   verdicts: {
     optional: { headline: 'Windows är valfritt.', sub: 'Nästan allt du spelar fungerar på Linux. Undantagen är få.' },
@@ -164,6 +160,12 @@ const sv: typeof en = {
       sub: 'För mycket av biblioteket fungerar inte än. Kolla igen om ett år.',
     },
     empty: { headline: 'Inget att räkna.', sub: 'Byt till att räkna antal spel i stället.' },
+  },
+  compare: {
+    kicker: 'Spela tillsammans',
+    title: 'Jämför med vänner',
+    text: 'Välj upp till tre vänner och se vilka spel ni alla äger som fungerar på Linux, vilka ett köp skulle låsa upp och vilka som stoppas av anti-fusk.',
+    cta: 'Jämför med vänner',
   },
   wishlist: {
     loading: 'Kollar din önskelista…',
