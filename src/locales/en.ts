@@ -232,6 +232,8 @@ export default {
     manualAdd: 'Add this profile',
     manualInvalid: "That doesn't look like a profile link or custom URL name.",
     manualDuplicate: 'That profile is already in the group.',
+    manualNotFound: "Steam doesn't know a profile by that name. Use their profile link or custom URL name.",
+    manualPrivate: "{name}'s game details are private, so their games can't be compared.",
     pickedTitle: 'In the group',
     pickedCount: '{n} of {max}',
     pickedNone: 'Nobody picked yet.',

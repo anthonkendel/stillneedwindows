@@ -85,7 +85,7 @@ Target: WCAG 2.2 AA.
 - **HTTP caching:** compat responses are cached by browsers for 1 h and by the Vercel CDN for 24 h. Ids are sorted per batch so repeat checks hit the same URLs. Profiles are cached only in the visitor's own browser (5 min) and never on the CDN. Errors and private profiles are never cached.
 - **Assets:** hashed assets are cached for a year. Fonts are self-hosted variable fonts, with no Google Fonts requests.
 - **Upstreams:** at most 6 ProtonDB requests at a time per batch. Concurrent lookups of the same game in one function instance share a single ProtonDB request.
-- **In the browser:** complete compat answers are kept for the life of the tab, so a wishlist or group check after a library check only asks for games it hasn't seen. A group check reuses the library already loaded in the tab instead of asking Steam again.
+- **In the browser:** complete compat answers are kept for the life of the tab, so a wishlist or group check after a library check only asks for games it hasn't seen. Public profiles read in the tab are reused for 5 minutes, so adding a friend by link, the group check and "Edit group" share one read, and a group check reuses the library already loaded instead of asking Steam again.
 - **Steam calls per check:** library 2–3, wishlist 2–3, friends list 2–3 plus one per 100 friends, group one library read per member. Wishlists, friends lists and libraries are never cached server-side; browsers keep them privately for 5 minutes.
 
 ## Security

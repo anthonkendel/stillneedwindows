@@ -9,6 +9,7 @@ import { router } from './router'
 
 const STEAMID = '76561197960287930'
 const FRIEND = '76561197960287931'
+const PAT = '76561197960287940'
 
 const profile: ProfileResponse = {
   status: 'ok',
@@ -111,6 +112,9 @@ beforeAll(() => {
     }
     if (url.includes('/api/profile/nobody')) return Response.json({ status: 'not_found' })
     if (url.includes(`/api/profile/${FRIEND}`)) return Response.json(friendProfile)
+    if (url.includes('/api/profile/patlink') || url.includes(`/api/profile/${PAT}`)) {
+      return Response.json({ ...friendProfile, profile: { ...friendProfile.profile, steamid: PAT, name: 'Pat' } })
+    }
     if (url.includes('/api/profile/')) return Response.json(profile)
     if (url.includes('/api/wishlist/')) return Response.json(wishlist)
     if (url.includes('/api/friends/')) return Response.json(friends)
@@ -270,6 +274,21 @@ describe('every screen renders in every language', () => {
     expect(after).toHaveLength(1)
     expect(after[0]!.element).toBe(tabs) // same node: the frame was not rebuilt
     expect(wrapper.find('a[aria-current="page"]').text()).toBe(i18n.global.t('results.byWishlist'))
+  })
+
+  it('shows names, not ids, for friends added by link', async () => {
+    await setLocale('en')
+    await visit(`/u/${STEAMID}/friends`)
+    await wrapper.find('#manual').setValue('steamcommunity.com/id/patlink')
+    await (wrapper.find('#manual').element as HTMLInputElement).form!.requestSubmit()
+    await settle()
+    const chips = () => wrapper.findAll('button.chip').map((b) => b.text())
+    expect(chips()).toContain('Pat')
+
+    // Back from the group page through "Edit group": the link only holds the id.
+    await visit(`/u/${STEAMID}/friends?with=${PAT}`)
+    expect(chips()).toContain('Pat')
+    expect(chips().join(' ')).not.toContain(PAT)
   })
 
   it('canonicalises a custom name to the SteamID64', async () => {

@@ -231,6 +231,9 @@ const sv: typeof en = {
     manualAdd: 'Lägg till profilen',
     manualInvalid: 'Det ser inte ut som en profillänk eller ett eget URL-namn.',
     manualDuplicate: 'Den profilen är redan med i gruppen.',
+    manualNotFound:
+      'Steam känner inte till någon profil med det namnet. Använd profillänken eller det egna URL-namnet.',
+    manualPrivate: '{name} har privata speldetaljer, så deras spel kan inte jämföras.',
     pickedTitle: 'I gruppen',
     pickedCount: '{n} av {max}',
     pickedNone: 'Ingen vald än.',

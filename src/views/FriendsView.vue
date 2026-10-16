@@ -9,7 +9,7 @@ import ProfileRow from '../components/ProfileRow.vue'
 import ErrorState from '../components/states/ErrorState.vue'
 import NotFoundState from '../components/states/NotFoundState.vue'
 import StateIcon from '../components/states/StateIcon.vue'
-import { fetchFriends } from '../lib/api'
+import { fetchFriends, fetchProfile, knownProfile } from '../lib/api'
 import { MAX_FRIENDS_PICKED } from '../lib/group'
 import { formatNumber } from '../lib/tiers'
 
@@ -39,7 +39,10 @@ function initialPicks(): Pick[] {
     .map((key) => key.trim())
     .filter(Boolean)
     .slice(0, MAX_FRIENDS_PICKED)
-    .map((key) => ({ key, label: friends.value.find((f) => f.steamid === key)?.name ?? key }))
+    .map((key) => ({
+      key,
+      label: friends.value.find((f) => f.steamid === key)?.name ?? knownProfile(key)?.name ?? key,
+    }))
 }
 
 async function load() {
@@ -84,21 +87,40 @@ const sinceYear = (f: Friend) => (f.since ? new Date(f.since * 1000).getFullYear
 
 const manual = ref('')
 const manualError = ref('')
-function addManual() {
+const adding = ref(false)
+
+/** Looks the profile up straight away, so the chip shows a name and problems show here, not later. */
+async function addManual() {
   const q = parseProfileInput(manual.value)
   if (!q) {
     manualError.value = t('friends.manualInvalid')
     return
   }
-  if (q.value === profile.value?.steamid || isPicked(q.value)) {
-    manualError.value = t('friends.manualDuplicate')
-    return
+  if (full.value || adding.value) return
+  adding.value = true
+  try {
+    const res = await fetchProfile(q.value)
+    if (res.status === 'not_found') {
+      manualError.value = t('friends.manualNotFound')
+      return
+    }
+    const { steamid, name } = res.profile
+    if (steamid === profile.value?.steamid || isPicked(steamid)) {
+      manualError.value = t('friends.manualDuplicate')
+      return
+    }
+    if (res.status === 'private') {
+      manualError.value = t('friends.manualPrivate', { name })
+      return
+    }
+    picked.value = [...picked.value, { key: steamid, label: name }]
+    manual.value = ''
+    manualError.value = ''
+  } catch {
+    manualError.value = t('error.title')
+  } finally {
+    adding.value = false
   }
-  if (full.value) return
-  const friend = friends.value.find((f) => f.steamid === q.value)
-  picked.value = [...picked.value, { key: q.value, label: friend?.name ?? q.value }]
-  manual.value = ''
-  manualError.value = ''
 }
 
 function compare() {
@@ -228,7 +250,8 @@ function compare() {
             type="submit"
             class="btn btn-secondary w-14 shrink-0 px-0"
             :aria-label="t('friends.manualAdd')"
-            :disabled="full"
+            :disabled="full || adding"
+            :aria-busy="adding"
           >
             <svg
               width="18"
